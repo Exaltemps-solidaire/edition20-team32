@@ -164,18 +164,29 @@ export default function Home() {
                   </button>
                   <h2 className={styles.ecranDetailTitre}>{creneau.jour}</h2>
                   <p className={styles.ecranDetailSousTitre}>{creneau.horaire}</p>
-                  <div className={styles.detailLigne}>
-                    <span>Tarif</span>
-                    <strong>{detail.tarif}</strong>
+
+                  <div className={styles.carte}>
+                    <div className={styles.carteTitre}>Détails de la session</div>
+                    <div className={styles.detailSection}>
+                      <div className={styles.detailRangee}>
+                        <span className={styles.detailCle}>Date</span>
+                        <span className={styles.detailValeur}>{creneau.jour}</span>
+                      </div>
+                      <div className={styles.detailRangee}>
+                        <span className={styles.detailCle}>Horaire</span>
+                        <span className={styles.detailValeur}>{creneau.horaire}</span>
+                      </div>
+                      <div className={styles.detailRangee}>
+                        <span className={styles.detailCle}>Tarif</span>
+                        <span className={styles.detailValeur}>{detail.tarif}</span>
+                      </div>
+                      <div className={styles.detailRangee}>
+                        <span className={styles.detailCle}>Salles</span>
+                        <span className={styles.detailValeur}>{detail.salles}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className={styles.detailLigne}>
-                    <span>Salles</span>
-                    <strong>{detail.salles}</strong>
-                  </div>
-                  <div className={styles.detailLigne}>
-                    <span>Équipe</span>
-                    <strong className={styles[`badge_${statut}`]}>{libelle}</strong>
-                  </div>
+
                   <div className={styles.titreSection}>Choisir un créneau</div>
                   <button
                     type="button"
@@ -184,17 +195,30 @@ export default function Home() {
                   >
                     {creneau.bloque ? "Annuler la réservation" : "Réserver ce créneau"}
                   </button>
-                  <div className={styles.formateursListe}>
-                    {formateursDisponibles.map((nom) => (
-                      <label key={nom} className={styles.formateurLigne}>
-                        <input
-                          type="checkbox"
-                          checked={assignes.includes(nom)}
-                          onChange={() => basculerFormateur(detailId, nom)}
-                        />
-                        {nom}
-                      </label>
-                    ))}
+
+                  <div className={styles.carte}>
+                    <div className={styles.carteTitre}>Équipe d&apos;animation</div>
+                    <div className={styles.equipeRequis}>
+                      Requis : {FORMATEURS_REQUIS} formateurs · {libelle}
+                    </div>
+                    {formateursDisponibles.map((nom) => {
+                      const estAssigne = assignes.includes(nom);
+                      return (
+                        <div
+                          key={nom}
+                          className={styles.equipeItem}
+                          onClick={() => basculerFormateur(detailId, nom)}
+                        >
+                          <div>
+                            <div className={styles.equipeNom}>{nom}</div>
+                            <div className={styles.equipeRole}>Formateur</div>
+                          </div>
+                          <span className={estAssigne ? styles.pillOk : styles.pillWarning}>
+                            {estAssigne ? "Affecté ✓" : "À affecter"}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );

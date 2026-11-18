@@ -376,3 +376,27 @@ Le développeur a demandé, en plus de l'itération 3 : (a) associer une réserv
     - `frontend/src/app/page.tsx` — liste : retire les boutons bloquer/annuler et les étiquettes, affiche heure/demi-journée/lieu en gris ; détail : ajoute la section « Choisir un créneau » avec le bouton réserver/annuler (déplacé depuis la liste).
   - Déployé : image `frontend` seule reconstruite et poussée (pas de changement API), conteneur recréé, présence du nouveau texte vérifiée dans les fichiers statiques du conteneur.
   - Version 13 signalée à PM Lab le 2026-11-18T16:58:11Z.
+
+## Itération 14 : sections « Détails de la session » et « Équipe d'animation » conformes à la maquette
+
+- **Dans le périmètre** : les lignes Tarif/Salles deviennent une vraie carte « Détails de la session » (titre + lignes clé/valeur, style `.detail-section`/`.detail-row` de la maquette) ; la liste de cases à cocher des formateurs devient une carte « Équipe d'animation » (style `.equipe-item` + pastilles `.pill-ok`/`.pill-warning` de la maquette), avec le statut d'équipe affiché en sous-titre de carte.
+- **Hors périmètre** : nouveaux champs de données (Lieu, Qualiopi, Public de la maquette non repris, faute de données) ; rôle par formateur (reste « Formateur » générique, pas de distinction salarié/bénévole, donnée absente).
+- **Critères d'acceptation** :
+  - Étant donné l'écran détail, une carte « Détails de la session » affiche Date/Horaire/Tarif/Salles en lignes clé/valeur avec séparateurs.
+  - Étant donné l'écran détail, une carte « Équipe d'animation » liste les 4 formateurs avec une pastille verte « Affecté ✓ » ou orange « À affecter », cliquable pour (dés)affecter.
+- **Hypothèse de l'équipe couverte** : aucune — retour de style/ergonomie du développeur.
+- **Codage estimé** : 5 minutes.
+- **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css`.
+- **Tests unitaires prévus** : aucun — style/affichage pur, logique de calcul d'équipe déjà testée (itération 9).
+- **Étapes ajoutées à la démo** : aucune (reporté).
+- **Bilan** :
+  - Temps restant annoncé : 5 min (2026-11-18T16:59:xx).
+  - Codage réel : <1 min, sans dépassement.
+  - Critères satisfaits : les deux.
+  - Écart : les classes CSS `.formateursListe`/`.formateurLigne` (remplacées par `.equipeItem`) ne sont pas supprimées de `page.module.css`, pour tenir le budget — à nettoyer plus tard avec le reste du CSS mort signalé à l'itération 13.
+  - Harnais : aucun blocage ; `npm test` 17/17 inchangé ; déployabilité « aucune borne franchie ».
+  - **Modifications** :
+    - `frontend/src/app/page.tsx` — remplace les lignes Tarif/Salles par une carte `.carte`/`.carteTitre` « Détails de la session » (Date/Horaire/Tarif/Salles en `.detailRangee`) ; remplace les cases à cocher par une carte « Équipe d'animation » avec lignes `.equipeItem` cliquables et pastilles `.pillOk`/`.pillWarning`.
+    - `frontend/src/app/page.module.css` — ajoute `.carte`, `.carteTitre`, `.detailSection`/`.detailRangee`/`.detailCle`/`.detailValeur`, `.equipeRequis`, `.equipeItem`/`.equipeNom`/`.equipeRole`, `.pillOk`/`.pillWarning` (repris de la maquette non retenue).
+  - Déployé : image `frontend` seule reconstruite et poussée, conteneur recréé, nouveau code vérifié présent dans le conteneur.
+  - Version 14 signalée à PM Lab le 2026-11-18T17:01:21Z.
