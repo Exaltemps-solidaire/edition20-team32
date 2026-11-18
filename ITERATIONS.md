@@ -56,24 +56,47 @@ Le reste de ce document part du principe que tu choisis l'option 1 (c'est la plu
     - `api/Dockerfile`, `frontend/Dockerfile` — qualification `docker.io/library/...` des images de base (sinon échec de résolution de nom court sur cette machine).
   - Version 1 signalée à PM Lab le 2026-11-18T15:46:15Z, à `https://edition20-team32.exaltemps-space.com`.
 
-## Itération 2 : le·la formateur·rice saisit ses disponibilités de la semaine (données en dur)
+## ✂️ Alerte de capacité — à lire avant de lancer `/iteration 2`
 
-- **Dans le périmètre** : un écran de saisie des disponibilités (matin/après-midi/indisponible, 5 jours), avec des données en dur affichées après saisie — pas de persistance ni de base de données pour cette première version fonctionnelle.
-- **Hors périmètre** : la persistance réelle, la vue « capacité » de la coordinatrice, les sessions.
+Il reste **5 minutes** avant la fin du build (répondu le 2026-11-18), tour de test de l'équipe annoncé à 10 minutes. Le calcul de capacité (codage ≤ 10 min + publication ≈ 5 min + tour de test ≈ 10 min) ne passe pas : la seule publication (construire, pousser, redéployer, vérifier, signaler) couvre déjà tout le temps restant, même à 0 minute de codage, et il faudrait encore le tour de test. Je ne force pas une itération complète dans ce temps.
+
+❓ **Question pour toi** : comment veux-tu qu'on utilise ces 5 minutes ?
+1. **Coder le plus petit changement possible maintenant** (le calendrier en grille au lieu d'une liste, même visuel, mêmes données, même action de blocage) et accepter que publication + signal + tour de test débordent sur le temps déjà annoncé comme fin de build.
+2. **Ne rien coder** et vérifier d'abord auprès des cadreurs si plus de temps est accordé, pour ne pas laisser un déploiement à moitié fait ni répéter le dépassement de l'itération 1.
+3. **Traiter cette itération comme la dernière** : dans ce cas, d'après `CLAUDE.md` (« Quand le temps restant ne permet plus qu'une itération, consacre-la à stabiliser ce qui sera montré au pitch »), le plus utile n'est peut-être pas un nouvel écran mais de vérifier que l'itération 1 tient bien en ligne pour le pitch.
+
+Le reste de cette section part du principe que tu choisis l'option 1 (même schéma que l'itération 1, et le changement demandé est purement visuel — pas de nouvelle route API, pas de nouvelle donnée), mais je ne code rien avant ta confirmation.
+
+## Itération 2 : le calendrier se lit comme une grille de la semaine, pas une liste
+
+- **Dans le périmètre** : remplacer l'affichage en liste (`<ul>`) par une grille visuelle regroupant les créneaux par jour (une colonne ou une ligne par jour), même données (`GET /api/v1/creneaux`), même action « Bloquer ce créneau ». Aucun changement côté `api/`.
+- **Hors périmètre** : la saisie des disponibilités du formateur (reportée en position 3 de « À venir », ⚠️ à valider par les cadreurs — c'était la section « Itération 2 » avant ce message) ; toute nouvelle donnée ou route ; la persistance.
 - **Critères d'acceptation** :
-  - Étant donné l'écran de saisie, quand le formateur coche un créneau par jour, alors le choix est visible à l'écran (état local).
-  - Étant donné le formulaire rempli, quand il est validé, alors un message confirme la saisie.
-- **Hypothèse de l'équipe couverte** : « la saisie hebdomadaire des disponibilités par les formateurs permet d'affecter sans conflit de dates » (mesure cible : 0 conflit — pas encore mesurable à ce stade, juste la saisie).
-- **Codage estimé** : à affiner au moment de l'itération, selon le temps restant alors.
-- **Fichiers prévus** : à affiner.
-- **Tests unitaires prévus** : 1 à 2, sur la logique de validation du formulaire (ex. au moins un créneau saisi).
-- **Étapes ajoutées à la démo** : ouvrir l'écran de saisie, cocher des créneaux, valider.
-- **Bilan** : _à remplir en fin d'itération._
+  - Étant donné le calendrier, quand la page se charge, alors les créneaux sont groupés visuellement par jour (plus une simple liste à puces).
+  - Étant donné un créneau disponible dans la grille, quand le formateur clique sur « Bloquer ce créneau », alors il apparaît bloqué au même endroit, sans rechargement (comportement inchangé de l'itération 1).
+- **Hypothèse de l'équipe couverte** : aucune — retour de l'équipe sur la lisibilité de l'écran, pas une hypothèse de la passation.
+- **Codage estimé** : 2 à 3 minutes (CSS/structure du composant existant, aucune logique métier nouvelle).
+- **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css`.
+- **Tests unitaires prévus** : aucun nouveau — pas de logique métier ajoutée (balisage/CSS pur), conforme à la règle « pas de test sur du balisage pur ».
+- **Étapes ajoutées à la démo** : aucune — le parcours (ouvrir, bloquer un créneau) ne change pas, seul l'agencement visuel change.
+- **Bilan** :
+  - Temps restant annoncé au début : 5 minutes (répondu le 2026-11-18, voir l'alerte de capacité ci-dessus) ; le développeur a choisi l'option 1 (coder maintenant, accepter le dépassement) en précisant de s'appuyer sur la maquette non retenue (`passation/versions-non-retenues/v1/index.html`) pour le visuel.
+  - Codage réel : **1 minute** (aucun dépassement du côté codage ; le dépassement attendu porte sur publication + signal, au-delà des 5 minutes annoncées, comme accepté par le développeur).
+  - Critères satisfaits : les 2 — créneaux groupés par jour en grille (remplace la liste à puces), blocage toujours visible au même endroit sans rechargement.
+  - Repris de la maquette non retenue : palette de couleurs (bleu `#004C9A`/`#E6F0FB` pour disponible, rouge `#CF4B31`/`#F3E8E6` pour bloqué, gris `#8F8F8F`, fond `#F4F6F9`), structure `jour → colonne → créneaux empilés` inspirée de `.days-row`/`.day-col`/`.slot` du prototype « Saisir mes disponibilités ».
+  - Reporté : rien de nouveau. `e2e/demo.spec.ts` toujours non exécutable localement (lib système manquante pour Chromium, hors DoD) — mis à jour pour matcher les nouveaux libellés de boutons, non rejoué.
+  - Bloqué/refusé par le harnais : rien — `./scripts/verifier-deployabilite.sh` n'a signalé aucune borne, `npm test` passait avant le signal (5/5, inchangé — pas de logique métier ajoutée).
+  - **Modifications** :
+    - `frontend/src/app/page.tsx` — regroupe les créneaux par jour (`Map`) et les affiche en grille de colonnes au lieu d'une `<ul>` ; sert les 2 critères.
+    - `frontend/src/app/page.module.css` — styles de la grille (`.semaine`, `.jourColonne`, `.creneauDispo`, `.creneauBloque`...) inspirés de la maquette non retenue.
+    - `e2e/demo.spec.ts` — adapte les sélecteurs de la démo aux nouveaux boutons (libellé = horaire, pas « Bloquer ce créneau »).
+  - Version 2 signalée à PM Lab le 2026-11-18T15:59:12Z, à `https://edition20-team32.exaltemps-space.com`.
 
 ## À venir (objectifs ordonnés, détaillés au fil de l'eau)
 
-3. Vue « Capacité de la semaine » pour la coordinatrice, à partir des disponibilités saisies.
-4. Détail d'une session + affectation de l'équipe d'animation (règle : 1 salarié·e + 1 bénévole si demi-journée, 2 salarié·es + 1 bénévole si journée entière).
-5. Calendrier commerçant en lecture seule (créneaux disponibles uniquement).
-6. Réservation d'un créneau par un commerçant + blocage automatique du créneau.
-7. Rappel automatique 4 à 5 jours avant la formation (si le temps le permet — sinon hors périmètre du hackathon, à dire explicitement).
+3. Le·la formateur·rice saisit ses disponibilités de la semaine (données en dur) — ⚠️ repoussée depuis la position d'Itération 2, à faire valider par les cadreurs.
+4. Vue « Capacité de la semaine » pour la coordinatrice, à partir des disponibilités saisies.
+5. Détail d'une session + affectation de l'équipe d'animation (règle : 1 salarié·e + 1 bénévole si demi-journée, 2 salarié·es + 1 bénévole si journée entière).
+6. Calendrier commerçant en lecture seule (créneaux disponibles uniquement).
+7. Réservation d'un créneau par un commerçant + blocage automatique du créneau.
+8. Rappel automatique 4 à 5 jours avant la formation (si le temps le permet — sinon hors périmètre du hackathon, à dire explicitement).

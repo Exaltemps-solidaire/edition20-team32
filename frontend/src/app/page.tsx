@@ -32,26 +32,44 @@ export default function Home() {
     setCreneaux((actuels) => actuels.map((c) => (c.id === creneau.id ? creneau : c)));
   }
 
+  const parJour = new Map<string, Creneau[]>();
+  for (const creneau of creneaux) {
+    const liste = parJour.get(creneau.jour) ?? [];
+    liste.push(creneau);
+    parJour.set(creneau.jour, liste);
+  }
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <h1>Calendrier des formations · La Cloche</h1>
+        <h1 className={styles.titre}>Calendrier des formations · La Cloche</h1>
         <p>Bloquez les créneaux que vous animez cette semaine.</p>
-        {erreur && <p role="alert">{erreur}</p>}
-        <ul>
-          {creneaux.map((creneau) => (
-            <li key={creneau.id}>
-              {creneau.jour} · {creneau.horaire} —{" "}
-              {creneau.bloque ? (
-                <strong>Bloqué</strong>
-              ) : (
-                <button type="button" onClick={() => bloquer(creneau.id)}>
-                  Bloquer ce créneau
-                </button>
-              )}
-            </li>
+        {erreur && (
+          <p className={styles.erreur} role="alert">
+            {erreur}
+          </p>
+        )}
+        <div className={styles.semaine}>
+          {Array.from(parJour.entries()).map(([jour, creneauxDuJour]) => (
+            <div key={jour} className={styles.jourColonne}>
+              <div className={styles.jourLabel}>{jour}</div>
+              <div className={styles.creneauxDuJour}>
+                {creneauxDuJour.map((creneau) => (
+                  <button
+                    key={creneau.id}
+                    type="button"
+                    disabled={creneau.bloque}
+                    onClick={() => bloquer(creneau.id)}
+                    className={creneau.bloque ? styles.creneauBloque : styles.creneauDispo}
+                  >
+                    {creneau.horaire}
+                    {creneau.bloque ? " · Bloqué" : ""}
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       </main>
     </div>
   );

@@ -148,3 +148,72 @@ a.secondary {
   padding: 0.1em 0.4em;
   border-radius: 6px;
 }
+
+.titre {
+  color: #2b5672;
+}
+
+.erreur {
+  color: #cf4b31;
+  font-weight: 700;
+}
+
+.semaine {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.jourColonne {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #f4f6f9;
+  border: 1px solid #dde3ea;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.jourLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: #8f8f8f;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.creneauxDuJour {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.creneauDispo,
+.creneauBloque {
+  width: 100%;
+  border-radius: 6px;
+  padding: 8px 6px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  font-family: inherit;
+}
+
+.creneauDispo {
+  background: #e6f0fb;
+  color: #004c9a;
+  cursor: pointer;
+}
+
+.creneauDispo:hover {
+  background: #d3e5f8;
+}
+
+.creneauBloque {
+  background: #f3e8e6;
+  color: #cf4b31;
+  cursor: default;
+}

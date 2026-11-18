@@ -7,13 +7,15 @@ test("Démo : le cas passant", async ({ page }) => {
     await expect(page.locator("body")).toBeVisible();
   });
 
-  await test.step("Je vois le calendrier de la semaine", async () => {
+  await test.step("Je vois le calendrier de la semaine, groupé par jour", async () => {
     await expect(page.getByRole("heading", { name: /Calendrier des formations/ })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Bloquer ce créneau" }).first()).toBeVisible();
+    await expect(page.locator("button:not([disabled])").first()).toBeVisible();
   });
 
   await test.step("Je bloque un créneau en tant que formateur", async () => {
-    await page.getByRole("button", { name: "Bloquer ce créneau" }).first().click();
-    await expect(page.getByText("Bloqué").first()).toBeVisible();
+    const creneauDisponible = page.locator("button:not([disabled])").first();
+    await creneauDisponible.click();
+    await expect(creneauDisponible).toBeDisabled();
+    await expect(creneauDisponible).toContainText("Bloqué");
   });
 });
