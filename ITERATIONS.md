@@ -132,29 +132,6 @@ Le développeur a demandé, en plus de l'itération 3 : (a) associer une réserv
 11. Pouvoir créer un créneau réellement (nouvelle route `POST /api/v1/creneaux`, logique métier, test) — se branche ensuite sur l'écran Disponibilités de l'itération 5.
 12. Brancher l'écran Disponibilités (itération 5) sur une vraie sauvegarde par formateur·rice, une fois l'authentification/l'identité du formateur réglée (❓ pas encore abordé).
 
-## Itération 5 : onglets « Sessions » / « Disponibilités », écran de saisie mocké
-
-- **Dans le périmètre** : deux onglets en haut de l'écran — « Sessions » (le calendrier actuel, inchangé) et « Disponibilités » (nouvel écran, inspiré de la maquette : pour chaque jour de la semaine, des boutons Matin / Après-midi / Indispo, état géré en local, **sans appel API, sans persistance**).
-- **Hors périmètre** : la création réelle de créneaux (point 11 d'« À venir ») ; la sauvegarde des disponibilités (point 12) ; l'identité du formateur connecté.
-- **Critères d'acceptation** :
-  - Étant donné l'écran, quand on clique sur l'onglet « Disponibilités », alors la grille Matin/Après-midi/Indispo par jour s'affiche à la place du calendrier.
-  - Étant donné l'écran Disponibilités, quand on clique sur un bouton Matin/Après-midi/Indispo, alors son état actif change visuellement (local, non sauvegardé).
-- **Hypothèse de l'équipe couverte** : aucune — préparation de l'écran formateur, pas encore branché sur une hypothèse vérifiable.
-- **Codage estimé** : 4 à 6 minutes.
-- **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css` (aucun fichier `api/`).
-- **Tests unitaires prévus** : aucun — balisage/interaction locale pure, pas de logique métier ajoutée.
-- **Étapes ajoutées à la démo** : aucune (écran encore mocké, non branché sur une donnée réelle).
-- **Bilan** :
-  - Temps restant annoncé au début : 10 minutes (répondu le 2026-11-18, déficit de capacité identique aux itérations précédentes, non reposé en question explicite — le développeur a répondu « laisse selon ton découpage », confirmant le découpage proposé en 2 itérations (5 et 11) plutôt que tout en bloc).
-  - Codage réel : **moins d'une minute**.
-  - Critères satisfaits : les 2 — l'onglet « Disponibilités » affiche la grille Matin/Après-midi/Indispo par jour à la place du calendrier ; chaque bouton bascule son état actif localement (Indispo exclusif des deux autres).
-  - Reporté : rien de prévu n'a été coupé. La sauvegarde réelle des disponibilités et la création de créneaux restent hors périmètre (points 11 et 12 d'« À venir »).
-  - Bloqué/refusé par le harnais : rien — `./scripts/verifier-deployabilite.sh` n'a signalé aucune borne, `npm test` passait avant le signal (7/7, inchangé — pas de logique métier ajoutée, interaction locale pure).
-  - **Modifications** :
-    - `frontend/src/app/page.tsx` — ajoute l'état `onglet` (bascule Sessions/Disponibilités), l'écran Disponibilités avec données mockées (`dispoMockInitiale`) et sa logique de bascule locale (`basculer`) ; sert les 2 critères.
-    - `frontend/src/app/page.module.css` — styles des onglets et de la grille de disponibilités (boutons actifs/inactifs/indispo).
-  - Version 5 signalée à PM Lab le 2026-11-18T16:18:44Z, à `https://edition20-team32.exaltemps-space.com`.
-
 ## Itération 4 : structure et style de la vue détaillée d'une réservation, avec des données mockées
 
 - **Dans le périmètre** : un nouvel écran (accessible en cliquant sur un créneau bloqué depuis le calendrier), format resserré pensé mobile-vertical, inspiré de l'écran « Détail de la session » de la maquette non retenue. Affiche, en dur (données mockées, pas de nouvelle route API) : date/horaire, gratuite ou payante, nombre de salles, et un statut d'équipe parmi trois valeurs mockées (« Équipe prête », « N manquant », « à affecter »).
@@ -178,3 +155,50 @@ Le développeur a demandé, en plus de l'itération 3 : (a) associer une réserv
     - `frontend/src/app/page.tsx` — ajoute une donnée mockée par créneau (`detailsMock`), un lien « Voir le détail » par créneau, et le panneau de détail (tarif, salles, statut d'équipe) ; sert les 2 critères.
     - `frontend/src/app/page.module.css` — styles du panneau resserré (`.vueDetail`, `.detailLigne`, pastilles de couleur par statut d'équipe).
   - Version 4 signalée à PM Lab le 2026-11-18T16:15:51Z, à `https://edition20-team32.exaltemps-space.com`.
+
+## Itération 5 : onglets « Sessions » / « Disponibilités », écran de saisie mocké
+
+- **Dans le périmètre** : deux onglets en haut de l'écran — « Sessions » (le calendrier actuel, inchangé) et « Disponibilités » (nouvel écran, inspiré de la maquette : pour chaque jour de la semaine, des boutons Matin / Après-midi / Indispo, état géré en local, **sans appel API, sans persistance**).
+- **Hors périmètre** : la création réelle de créneaux (point 11 d'« À venir ») ; la sauvegarde des disponibilités (point 12) ; l'identité du formateur connecté.
+- **Critères d'acceptation** :
+  - Étant donné l'écran, quand on clique sur l'onglet « Disponibilités », alors la grille Matin/Après-midi/Indispo par jour s'affiche à la place du calendrier.
+  - Étant donné l'écran Disponibilités, quand on clique sur un bouton Matin/Après-midi/Indispo, alors son état actif change visuellement (local, non sauvegardé).
+- **Hypothèse de l'équipe couverte** : aucune — préparation de l'écran formateur, pas encore branché sur une hypothèse vérifiable.
+- **Codage estimé** : 4 à 6 minutes.
+- **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css` (aucun fichier `api/`).
+- **Tests unitaires prévus** : aucun — balisage/interaction locale pure, pas de logique métier ajoutée.
+- **Étapes ajoutées à la démo** : aucune (écran encore mocké, non branché sur une donnée réelle).
+- **Bilan** :
+  - Temps restant annoncé au début : 10 minutes (répondu le 2026-11-18, déficit de capacité identique aux itérations précédentes, non reposé en question explicite — le développeur a répondu « laisse selon ton découpage », confirmant le découpage proposé en 2 itérations (5 et 11) plutôt que tout en bloc).
+  - Codage réel : **moins d'une minute**.
+  - Critères satisfaits : les 2 — l'onglet « Disponibilités » affiche la grille Matin/Après-midi/Indispo par jour à la place du calendrier ; chaque bouton bascule son état actif localement (Indispo exclusif des deux autres).
+  - Reporté : rien de prévu n'a été coupé. La sauvegarde réelle des disponibilités et la création de créneaux restent hors périmètre (points 11 et 12 d'« À venir »).
+  - Bloqué/refusé par le harnais : rien — `./scripts/verifier-deployabilite.sh` n'a signalé aucune borne, `npm test` passait avant le signal (7/7, inchangé — pas de logique métier ajoutée, interaction locale pure).
+  - **Modifications** :
+    - `frontend/src/app/page.tsx` — ajoute l'état `onglet` (bascule Sessions/Disponibilités), l'écran Disponibilités avec données mockées (`dispoMockInitiale`) et sa logique de bascule locale (`basculer`) ; sert les 2 critères.
+    - `frontend/src/app/page.module.css` — styles des onglets et de la grille de disponibilités (boutons actifs/inactifs/indispo).
+  - Version 5 signalée à PM Lab le 2026-11-18T16:18:44Z, à `https://edition20-team32.exaltemps-space.com`.
+
+## Itération 6 : la vue « Sessions » devient une liste verticale de cartes, stylée comme la maquette
+
+- **Dans le périmètre** : remplacer la grille par jour de l'onglet « Sessions » par une liste verticale de cartes (une par créneau), inspirée de l'écran « Sessions prévues » de la maquette non retenue : bloc date (jour/mois), titre, méta (horaire), étiquettes (tarif, repris de `detailsMock`), pastille de statut d'équipe (repris de `detailsMock`/`libelleEquipe`, mêmes couleurs que l'itération 4). Les champs absents du modèle de données (nom de la formation, lieu, commerce) affichent **« todo »** au lieu d'être inventés.
+- **Hors périmètre** : la création de créneaux (point 11, devient l'itération 7) ; toute nouvelle donnée réelle (lieu, nom de formation) — ❓ à fixer avec les cadreurs avant de remplacer les « todo ».
+- **Critères d'acceptation** :
+  - Étant donné l'onglet Sessions, quand la page se charge, alors les créneaux s'affichent en liste verticale de cartes (plus la grille par colonnes de jour).
+  - Étant donné une carte, alors elle affiche le bloc date, le tarif et le statut d'équipe (données déjà mockées en itération 4) et « todo » pour le nom de formation et le lieu.
+  - Étant donné un créneau, le blocage/annulation (itération 3) et le lien « Voir le détail » (itération 4) restent fonctionnels depuis la carte.
+- **Hypothèse de l'équipe couverte** : aucune — retour de style du développeur.
+- **Codage estimé** : 4 à 6 minutes.
+- **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css`.
+- **Tests unitaires prévus** : aucun — balisage/style pur.
+- **Étapes ajoutées à la démo** : aucune (le parcours bloquer/annuler ne change pas, seul l'agencement visuel change).
+- **Bilan** :
+  - Temps restant annoncé au début : 15 minutes (répondu le 2026-11-18).
+  - Codage réel : **moins d'une minute**.
+  - Critères satisfaits : les 3 — liste verticale de cartes (date/mois, méta, étiquettes, statut) remplace la grille par colonnes ; tarif et statut d'équipe affichés quand connus (`detailsMock`, 5 créneaux sur 5) ; nom de formation et lieu affichés en « todo » (absents du modèle de données) ; blocage/annulation et « Voir le détail » restent fonctionnels depuis la carte.
+  - Reporté : rien de nouveau. ❓ Nom de formation et lieu restent en `todo` tant que la passation ou les cadreurs ne fournissent pas ces données (pas de mock inventé, conformément à la consigne de ne pas inventer de fonctionnalité/donnée absente).
+  - Bloqué/refusé par le harnais : rien — `./scripts/verifier-deployabilite.sh` n'a signalé aucune borne, `npm test` passait avant le signal (7/7, inchangé — balisage/style pur).
+  - **Modifications** :
+    - `frontend/src/app/page.tsx` — remplace le regroupement par jour (`parJour`, retiré) par une liste de cartes `sessionCarte` par créneau (bloc date, titre, méta, étiquettes, statut, actions) ; sert les 3 critères.
+    - `frontend/src/app/page.module.css` — styles de la carte de session (`.sessionCarte`, `.sessionDateBloc`, `.etiquette`, `.pastille_todo`...), inspirés de l'écran « Sessions prévues » de la maquette non retenue.
+  - Version 6 signalée à PM Lab le 2026-11-18T16:22:59Z, à `https://edition20-team32.exaltemps-space.com`.

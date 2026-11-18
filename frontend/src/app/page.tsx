@@ -88,13 +88,6 @@ export default function Home() {
     setCreneaux((actuels) => actuels.map((c) => (c.id === creneau.id ? creneau : c)));
   }
 
-  const parJour = new Map<string, Creneau[]>();
-  for (const creneau of creneaux) {
-    const liste = parJour.get(creneau.jour) ?? [];
-    liste.push(creneau);
-    parJour.set(creneau.jour, liste);
-  }
-
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -123,13 +116,24 @@ export default function Home() {
                 {erreur}
               </p>
             )}
-            <div className={styles.semaine}>
-              {Array.from(parJour.entries()).map(([jour, creneauxDuJour]) => (
-                <div key={jour} className={styles.jourColonne}>
-                  <div className={styles.jourLabel}>{jour}</div>
-                  <div className={styles.creneauxDuJour}>
-                    {creneauxDuJour.map((creneau) => (
-                      <div key={creneau.id}>
+            <div className={styles.sessionListe}>
+              {creneaux.map((creneau) => {
+                const [, jourNum, mois] = creneau.jour.split(" ");
+                const detail = detailsMock[creneau.id];
+                return (
+                  <div key={creneau.id} className={styles.sessionCarte}>
+                    <div className={styles.sessionDateBloc}>
+                      <div className={styles.sessionJourNum}>{jourNum}</div>
+                      <div className={styles.sessionMois}>{mois}</div>
+                    </div>
+                    <div className={styles.sessionCorps}>
+                      <div className={styles.sessionTitre}>todo</div>
+                      <div className={styles.sessionMeta}>{creneau.horaire}</div>
+                      <div className={styles.sessionEtiquettes}>
+                        <span className={styles.etiquette}>todo</span>
+                        <span className={styles.etiquette}>{detail ? detail.tarif : "todo"}</span>
+                      </div>
+                      <div className={styles.sessionActions}>
                         <button
                           type="button"
                           onClick={() => (creneau.bloque ? annuler(creneau.id) : bloquer(creneau.id))}
@@ -142,10 +146,15 @@ export default function Home() {
                           Voir le détail
                         </button>
                       </div>
-                    ))}
+                    </div>
+                    <div className={styles.sessionStatut}>
+                      <span className={detail ? styles[`pastille_${detail.equipe}`] : styles.pastille_todo}>
+                        {detail ? libelleEquipe[detail.equipe] : "todo"}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             {detailId &&
               (() => {

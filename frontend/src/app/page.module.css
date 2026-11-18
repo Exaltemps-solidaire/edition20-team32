@@ -366,3 +366,93 @@ a.secondary {
   background: #cf4b31;
   color: #fff;
 }
+
+.sessionListe {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.sessionCarte {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: #fff;
+  border: 1px solid #dde3ea;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.sessionDateBloc {
+  flex-shrink: 0;
+  width: 44px;
+  text-align: center;
+  background: #f4f6f9;
+  border-radius: 6px;
+  padding: 6px 0;
+}
+
+.sessionJourNum {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2b5672;
+  line-height: 1;
+}
+
+.sessionMois {
+  font-size: 10px;
+  color: #8f8f8f;
+  text-transform: uppercase;
+}
+
+.sessionCorps {
+  flex: 1;
+  min-width: 0;
+}
+
+.sessionTitre {
+  font-weight: 700;
+  color: #2b5672;
+  font-size: 14px;
+}
+
+.sessionMeta {
+  font-size: 12px;
+  color: #8f8f8f;
+  margin: 2px 0 6px;
+}
+
+.sessionEtiquettes {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.etiquette {
+  background: #f4f6f9;
+  border: 1px solid #dde3ea;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  color: #2b5672;
+}
+
+.sessionActions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.sessionStatut {
+  flex-shrink: 0;
+}
+
+.pastille_todo {
+  color: #8f8f8f;
+  font-size: 11px;
+  font-weight: 700;
+}
