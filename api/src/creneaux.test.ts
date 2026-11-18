@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bloquerCreneau, listerCreneaux } from "./creneaux.ts";
+import { annulerCreneau, bloquerCreneau, listerCreneaux } from "./creneaux.ts";
 
 describe("bloquerCreneau", () => {
   it("bloque un créneau disponible", () => {
@@ -17,5 +17,19 @@ describe("bloquerCreneau", () => {
   it("refuse de bloquer un créneau inconnu", () => {
     const resultat = bloquerCreneau("inexistant");
     expect(resultat).toEqual({ ok: false, erreur: "creneau_inconnu" });
+  });
+});
+
+describe("annulerCreneau", () => {
+  it("libère un créneau bloqué", () => {
+    const bloque = listerCreneaux().find((c) => c.bloque);
+    const resultat = annulerCreneau(bloque!.id);
+    expect(resultat).toEqual({ ok: true, creneau: { ...bloque, bloque: false } });
+  });
+
+  it("refuse d'annuler un créneau déjà disponible", () => {
+    const disponible = listerCreneaux().find((c) => !c.bloque);
+    const resultat = annulerCreneau(disponible!.id);
+    expect(resultat).toEqual({ ok: false, erreur: "deja_disponible" });
   });
 });

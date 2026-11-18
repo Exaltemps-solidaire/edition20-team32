@@ -31,3 +31,15 @@ export function bloquerCreneau(id: string): ResultatBlocage {
   creneau.bloque = true;
   return { ok: true, creneau };
 }
+
+export type ResultatAnnulation =
+  | { ok: true; creneau: Creneau }
+  | { ok: false; erreur: "creneau_inconnu" | "deja_disponible" };
+
+export function annulerCreneau(id: string): ResultatAnnulation {
+  const creneau = creneaux.find((c) => c.id === id);
+  if (!creneau) return { ok: false, erreur: "creneau_inconnu" };
+  if (!creneau.bloque) return { ok: false, erreur: "deja_disponible" };
+  creneau.bloque = false;
+  return { ok: true, creneau };
+}

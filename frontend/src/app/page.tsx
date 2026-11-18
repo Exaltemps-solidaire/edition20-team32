@@ -32,6 +32,17 @@ export default function Home() {
     setCreneaux((actuels) => actuels.map((c) => (c.id === creneau.id ? creneau : c)));
   }
 
+  async function annuler(id: string) {
+    setErreur(null);
+    const reponse = await fetch(`/api/v1/creneaux/${id}/annuler`, { method: "POST" });
+    if (!reponse.ok) {
+      setErreur("Ce créneau n'a pas pu être libéré.");
+      return;
+    }
+    const creneau: Creneau = await reponse.json();
+    setCreneaux((actuels) => actuels.map((c) => (c.id === creneau.id ? creneau : c)));
+  }
+
   const parJour = new Map<string, Creneau[]>();
   for (const creneau of creneaux) {
     const liste = parJour.get(creneau.jour) ?? [];
@@ -58,12 +69,11 @@ export default function Home() {
                   <button
                     key={creneau.id}
                     type="button"
-                    disabled={creneau.bloque}
-                    onClick={() => bloquer(creneau.id)}
+                    onClick={() => (creneau.bloque ? annuler(creneau.id) : bloquer(creneau.id))}
                     className={creneau.bloque ? styles.creneauBloque : styles.creneauDispo}
                   >
                     {creneau.horaire}
-                    {creneau.bloque ? " · Bloqué" : ""}
+                    {creneau.bloque ? " · Bloqué (annuler)" : ""}
                   </button>
                 ))}
               </div>

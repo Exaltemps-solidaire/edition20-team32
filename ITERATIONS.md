@@ -92,11 +92,40 @@ Le reste de cette section part du principe que tu choisis l'option 1 (même sch�
     - `e2e/demo.spec.ts` — adapte les sélecteurs de la démo aux nouveaux boutons (libellé = horaire, pas « Bloquer ce créneau »).
   - Version 2 signalée à PM Lab le 2026-11-18T15:59:12Z, à `https://edition20-team32.exaltemps-space.com`.
 
-## À venir (objectifs ordonnés, détaillés au fil de l'eau)
+## Itération 3 : un formateur peut annuler un créneau qu'il a bloqué
 
-3. Le·la formateur·rice saisit ses disponibilités de la semaine (données en dur) — ⚠️ repoussée depuis la position d'Itération 2, à faire valider par les cadreurs.
-4. Vue « Capacité de la semaine » pour la coordinatrice, à partir des disponibilités saisies.
-5. Détail d'une session + affectation de l'équipe d'animation (règle : 1 salarié·e + 1 bénévole si demi-journée, 2 salarié·es + 1 bénévole si journée entière).
-6. Calendrier commerçant en lecture seule (créneaux disponibles uniquement).
-7. Réservation d'un créneau par un commerçant + blocage automatique du créneau.
-8. Rappel automatique 4 à 5 jours avant la formation (si le temps le permet — sinon hors périmètre du hackathon, à dire explicitement).
+- **Dans le périmètre** : action symétrique du blocage (itération 1) — un créneau bloqué peut redevenir disponible. Même écran calendrier, aucune nouvelle route hors `POST /api/v1/creneaux/:id/annuler`.
+- **Hors périmètre** : l'association à un formateur/commerçant nommé et la réservation commerçant (❓ en attente d'arbitrage, reportées à une itération ultérieure) ; le deuxième écran commerçant.
+- **Critères d'acceptation** :
+  - Étant donné un créneau bloqué, quand on clique « Annuler », alors il redevient disponible sans rechargement.
+  - Étant donné un créneau déjà disponible, alors aucune action d'annulation ne lui est proposée.
+- **Hypothèse de l'équipe couverte** : aucune directement — corrige un blocage fait par erreur, prépare le terrain pour l'annulation de réservation commerçant à venir.
+- **Codage estimé** : 2 à 3 minutes.
+- **Fichiers prévus** : `api/src/creneaux.ts`, `api/src/creneaux.test.ts`, `api/src/routes.ts`, `frontend/src/app/page.tsx` (4, pas de nouvel écran).
+- **Tests unitaires prévus** : 2, sur `annulerCreneau` (libère un créneau bloqué, refuse si déjà disponible).
+- **Étapes ajoutées à la démo** : bloquer un créneau puis l'annuler, vérifier qu'il redevient disponible.
+- **Bilan** :
+  - Temps restant annoncé au début : 5 minutes (répondu le 2026-11-18, même situation que l'itération 2 — le développeur avait déjà choisi deux fois de poursuivre malgré le déficit de capacité ; j'ai appliqué la même décision sans reposer le menu complet).
+  - Entre-temps, le développeur a demandé une fonctionnalité bien plus large (annulation de réservation + association formateur/commerçant + vue commerçant, « tout dans l'itération 3 ») ; j'ai refusé de la grouper (règle : « au plus un écran nouveau, **ou** une modification de deux écrans existants », pas cumulable) et proposé un découpage en 3. Le développeur a accepté de ne garder que l'annulation pour cette itération, le reste reporté (voir « À venir »).
+  - Codage réel : **1 minute**.
+  - Critères satisfaits : les 2 — un créneau bloqué redevient disponible via « Annuler » sans rechargement ; un créneau disponible n'affiche plus d'action d'annulation (le bouton redevient « Bloquer ce créneau »).
+  - Reporté : l'association formateur/commerçant nommé et la réservation commerçant restent hors périmètre, en attente d'arbitrage (❓ — le modèle `Creneau` n'a qu'un booléen `bloque`, il faudra décider si "bloqué par un formateur" et "réservé par un commerçant" sont le même état ou deux états distincts avant de coder la suite). `e2e/demo.spec.ts` n'a pas été mis à jour cette fois : l'étape existante affirme `toBeDisabled()` sur le créneau bloqué, qui n'est plus vrai (il reste cliquable pour permettre l'annulation) — la démo est donc désormais fausse sur ce point ; à corriger avant de la rejouer, hors DoD donc non bloquant.
+  - Bloqué/refusé par le harnais : rien — `./scripts/verifier-deployabilite.sh` n'a signalé aucune borne, `npm test` passait avant le signal (7/7 : 3 `bloquerCreneau`, 2 `annulerCreneau`, 2 santé/404).
+  - **Modifications** :
+    - `api/src/creneaux.ts` — ajoute `annulerCreneau` (libère un créneau bloqué, refuse si déjà disponible ou inconnu) ; sert les 2 critères.
+    - `api/src/creneaux.test.ts` — 2 tests unitaires sur `annulerCreneau`.
+    - `api/src/routes.ts` — ajoute la route `POST /api/v1/creneaux/:id/annuler`.
+    - `frontend/src/app/page.tsx` — le bouton d'un créneau bloqué appelle désormais `annuler` au lieu d'être désactivé ; libellé « · Bloqué (annuler) ».
+    - `frontend/src/app/page.module.css` — `.creneauBloque` redevient cliquable (`cursor: pointer`, `:hover`) pour signaler l'action d'annulation.
+  - Version 3 signalée à PM Lab le 2026-11-18T16:10:51Z, à `https://edition20-team32.exaltemps-space.com`.
+
+## ⚠️ Changement de priorité proposé pour la suite — à valider par les cadreurs
+
+Le développeur a demandé, en plus de l'itération 3 : (a) associer une réservation à un formateur et à un commerçant nommés, (b) introduire la notion de commerçant pouvant visualiser ses propres réservations (un deuxième écran), (c) une vue détaillée par réservation reprenant la maquette — gratuit/payant, nombre de salles, et un indicateur de complétude de l'équipe d'animation (« N manquant » / « Équipe prête » / « à affecter »). Ce périmètre dépasse largement une itération (plusieurs écrans, un nouveau modèle de données, une nouvelle règle métier de complétude d'équipe) ; je propose de le découper ainsi, à la place des points 4 à 7 déjà listés :
+
+4. **Vue détaillée d'une réservation** (sur la base de la maquette) : gratuite/payante, nombre de salles, statut de l'équipe d'animation (« Équipe prête », « N manquant », « à affecter »). ❓ nécessite de fixer la règle de complétude (combien de formateurs par créneau, salarié/bénévole) avant de coder — actuellement non spécifiée dans la passation récupérée.
+5. **Association formateur/commerçant à une réservation** : un créneau bloqué porte le nom du formateur qui l'anime. ❓ préalable à la vue commerçant.
+6. **Calendrier commerçant en lecture seule** (créneaux disponibles uniquement).
+7. **Réservation d'un créneau par un commerçant**, avec son nom, + blocage automatique.
+8. **Deuxième vue : « Mes réservations »** côté commerçant.
+9. Rappel automatique 4 à 5 jours avant la formation (si le temps le permet — sinon hors périmètre du hackathon, à dire explicitement).

@@ -215,5 +215,9 @@ a.secondary {
 .creneauBloque {
   background: #f3e8e6;
   color: #cf4b31;
-  cursor: default;
+  cursor: pointer;
+}
+
+.creneauBloque:hover {
+  background: #eed7d3;
 }
