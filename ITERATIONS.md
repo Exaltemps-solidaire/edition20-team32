@@ -427,3 +427,30 @@ Le développeur a demandé, en plus de l'itération 3 : (a) associer une réserv
     - `frontend/src/app/page.module.css` — ajoute `.barreBas`/`.boutonPrincipal` (style `.bottom-bar`/`.btn-primary` de la maquette).
   - Déployé : image `frontend` seule reconstruite et poussée, conteneur recréé, présence du nouveau bouton vérifiée dans le conteneur.
   - Version 15 signalée à PM Lab le 2026-11-18T17:09:42Z.
+
+## Itération 16 : le titre de la session devient un champ réel, modifiable à la création et dans le détail
+
+- **Dans le périmètre** : le modèle `Creneau` gagne un champ `titre` (obligatoire, remplace le littéral `"todo"` affiché jusqu'ici) ; la création de session (écran Disponibilités) ajoute un champ texte « Titre » ; l'écran détail propose un champ éditable avec bouton « Enregistrer » qui modifie le titre via une nouvelle route API.
+- **Hors périmètre** : validation de longueur/format du titre au-delà de « non vide » ; historique des modifications ; les 5 créneaux existants gardent `"todo"` comme valeur initiale de `titre` (donnée réelle absente, pas inventée).
+- **Critères d'acceptation** :
+  - Étant donné le formulaire « Ajouter une session », un titre vide désactive le bouton « Ajouter la session » ; une fois rempli (avec date/horaires), le créneau créé porte ce titre dans la liste.
+  - Étant donné l'écran détail d'un créneau, un champ texte pré-rempli avec le titre actuel permet de le modifier ; cliquer sur « Enregistrer » met à jour le titre affiché dans la liste des sessions sans rechargement.
+  - Étant donné la route `POST /api/v1/creneaux/:id/titre` appelée avec un titre vide, elle répond 400 avec `titre_requis` ; avec un id inconnu, 404 avec `creneau_inconnu`.
+- **Hypothèse de l'équipe couverte** : aucune — correction d'un placeholder (`"todo"`) en donnée réelle, demandée par le développeur.
+- **Codage estimé** : 5 minutes.
+- **Fichiers prévus** : `api/src/creneaux.ts`, `api/src/creneaux.test.ts`, `api/src/routes.ts`, `frontend/src/app/page.tsx`.
+- **Tests unitaires prévus** : 3-4, sur `modifierTitre` (succès, créneau inconnu, titre vide) et extension de `creerCreneau` (titre requis).
+- **Étapes ajoutées à la démo** : aucune (reporté, budget).
+- **Bilan** :
+  - Temps restant annoncé : 5 min (2026-11-18T18:11:xx) — même déficit assumé que les itérations précédentes (codage + publication + tour de test dépassent largement 5 minutes) ; le développeur a choisi de continuer.
+  - Codage réel : **4 minutes**, sans dépassement.
+  - Critères satisfaits : les trois — formulaire de création désactivé sans titre, créneau créé avec son titre réel ; champ éditable dans le détail, enregistrement propagé à la liste ; `POST /api/v1/creneaux/:id/titre` vérifié de bout en bout (400 `titre_requis` si vide — non testé manuellement mais couvert par les tests unitaires ; 404 `creneau_inconnu` couvert par les tests unitaires ; succès vérifié via `curl`).
+  - Écart : aucun.
+  - Harnais : aucun blocage final (deux blocages ESLint intermédiaires — import `modifierTitre` non utilisé dans `creneaux.test.ts` puis dans `routes.ts` — résolus en ajoutant les tests et les routes dans la foulée) ; `npm test` 25/25 (14 api + 11 frontend) ; déployabilité « aucune borne franchie ».
+  - **Modifications** :
+    - `api/src/creneaux.ts` — ajoute `titre: string` au type `Creneau` (valeur `"todo"` sur les 5 créneaux existants), étend `creerCreneau` pour exiger un titre (`titre_requis`), ajoute le type `ResultatModificationTitre` et la fonction pure `modifierTitre`.
+    - `api/src/creneaux.test.ts` — étend les tests `creerCreneau` (titre requis) et ajoute 3 tests sur `modifierTitre`.
+    - `api/src/routes.ts` — lit `titre` dans `POST /api/v1/creneaux`, ajoute la route `POST /api/v1/creneaux/:id/titre`.
+    - `frontend/src/app/page.tsx` — ajoute `titre` au type `Creneau` ; affiche `creneau.titre` dans la liste (remplace le littéral `"todo"`) ; ajoute le champ « Titre » au formulaire de création ; ajoute une carte « Titre de la session » éditable dans l'écran détail avec `enregistrerTitre`.
+  - Déployé : images `api` et `frontend` reconstruites et poussées (première fois depuis l'itération 12 que l'API change), conteneurs recréés, `POST /api/v1/creneaux` avec `titre` et `POST /api/v1/creneaux/:id/titre` vérifiés de bout en bout depuis la machine.
+  - Version 16 signalée à PM Lab le 2026-11-18T17:17:38Z.

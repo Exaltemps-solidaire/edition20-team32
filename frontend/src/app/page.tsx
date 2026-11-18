@@ -8,6 +8,7 @@ import { formatHoraire, formatJour } from "./formulaireDate";
 
 type Creneau = {
   id: string;
+  titre: string;
   jour: string;
   horaire: string;
   bloque: boolean;
@@ -57,9 +58,11 @@ export default function Home() {
   const [onglet, setOnglet] = useState<"sessions" | "disponibilites">("sessions");
   const [dispos, setDispos] = useState<Record<string, Dispo>>(dispoMockInitiale);
   const [assignations, setAssignations] = useState<Record<string, string[]>>(assignationsInitiales);
+  const [titreNouveau, setTitreNouveau] = useState("");
   const [dateChoisie, setDateChoisie] = useState("");
   const [heureDebut, setHeureDebut] = useState("");
   const [heureFin, setHeureFin] = useState("");
+  const [titreEdition, setTitreEdition] = useState("");
 
   function basculerFormateur(creneauId: string, nom: string) {
     setAssignations((actuelles) => {
@@ -112,7 +115,7 @@ export default function Home() {
     setErreur(null);
     const jour = formatJour(dateChoisie);
     const horaire = formatHoraire(heureDebut, heureFin);
-    const parametres = new URLSearchParams({ jour, horaire });
+    const parametres = new URLSearchParams({ titre: titreNouveau, jour, horaire });
     const reponse = await fetch(`/api/v1/creneaux?${parametres.toString()}`, { method: "POST" });
     if (!reponse.ok) {
       setErreur("Ce créneau n'a pas pu être créé.");
@@ -120,9 +123,22 @@ export default function Home() {
     }
     const creneau: Creneau = await reponse.json();
     setCreneaux((actuels) => [...actuels, creneau]);
+    setTitreNouveau("");
     setDateChoisie("");
     setHeureDebut("");
     setHeureFin("");
+  }
+
+  async function enregistrerTitre(id: string) {
+    setErreur(null);
+    const parametres = new URLSearchParams({ titre: titreEdition });
+    const reponse = await fetch(`/api/v1/creneaux/${id}/titre?${parametres.toString()}`, { method: "POST" });
+    if (!reponse.ok) {
+      setErreur("Le titre n'a pas pu être modifié.");
+      return;
+    }
+    const creneau: Creneau = await reponse.json();
+    setCreneaux((actuels) => actuels.map((c) => (c.id === creneau.id ? creneau : c)));
   }
 
   return (
@@ -169,6 +185,24 @@ export default function Home() {
                   </button>
                   <h2 className={styles.ecranDetailTitre}>{creneau.jour}</h2>
                   <p className={styles.ecranDetailSousTitre}>{creneau.horaire}</p>
+
+                  <div className={styles.carte}>
+                    <div className={styles.carteTitre}>Titre de la session</div>
+                    <div className={styles.formulaireAjout}>
+                      <input
+                        type="text"
+                        value={titreEdition}
+                        onChange={(e) => setTitreEdition(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => enregistrerTitre(creneau.id)}
+                        disabled={!titreEdition}
+                      >
+                        Enregistrer
+                      </button>
+                    </div>
+                  </div>
 
                   <div className={styles.carte}>
                     <div className={styles.carteTitre}>Détails de la session</div>
@@ -249,14 +283,17 @@ export default function Home() {
                           <div className={styles.sessionMois}>{mois}</div>
                         </div>
                         <div className={styles.sessionCorps}>
-                          <div className={styles.sessionTitre}>todo</div>
+                          <div className={styles.sessionTitre}>{creneau.titre}</div>
                           <div className={styles.sessionMeta}>
                             {creneau.horaire} · {libelleDemiJournee(creneau.horaire)} · todo
                           </div>
                           <button
                             type="button"
                             className={styles.lienDetail}
-                            onClick={() => setDetailId(creneau.id)}
+                            onClick={() => {
+                              setTitreEdition(creneau.titre);
+                              setDetailId(creneau.id);
+                            }}
                           >
                             Voir le détail
                           </button>
@@ -318,13 +355,19 @@ export default function Home() {
             <div className={styles.carte}>
               <div className={styles.carteTitre}>Ajouter une session</div>
               <div className={styles.formulaireAjout}>
+                <input
+                  type="text"
+                  placeholder="Titre de la session"
+                  value={titreNouveau}
+                  onChange={(e) => setTitreNouveau(e.target.value)}
+                />
                 <input type="date" value={dateChoisie} onChange={(e) => setDateChoisie(e.target.value)} />
                 <input type="time" value={heureDebut} onChange={(e) => setHeureDebut(e.target.value)} />
                 <input type="time" value={heureFin} onChange={(e) => setHeureFin(e.target.value)} />
                 <button
                   type="button"
                   onClick={ajouterCreneau}
-                  disabled={!dateChoisie || !heureDebut || !heureFin}
+                  disabled={!titreNouveau || !dateChoisie || !heureDebut || !heureFin}
                 >
                   Ajouter la session
                 </button>
