@@ -129,6 +129,31 @@ Le développeur a demandé, en plus de l'itération 3 : (a) associer une réserv
 8. **Deuxième vue : « Mes réservations »** côté commerçant.
 9. Rappel automatique 4 à 5 jours avant la formation (si le temps le permet — sinon hors périmètre du hackathon, à dire explicitement).
 10. Brancher la vue détaillée (itération 4) sur de vraies données et un vrai calcul de complétude d'équipe, une fois la règle fixée par les cadreurs — remplace les données mockées.
+11. Pouvoir créer un créneau réellement (nouvelle route `POST /api/v1/creneaux`, logique métier, test) — se branche ensuite sur l'écran Disponibilités de l'itération 5.
+12. Brancher l'écran Disponibilités (itération 5) sur une vraie sauvegarde par formateur·rice, une fois l'authentification/l'identité du formateur réglée (❓ pas encore abordé).
+
+## Itération 5 : onglets « Sessions » / « Disponibilités », écran de saisie mocké
+
+- **Dans le périmètre** : deux onglets en haut de l'écran — « Sessions » (le calendrier actuel, inchangé) et « Disponibilités » (nouvel écran, inspiré de la maquette : pour chaque jour de la semaine, des boutons Matin / Après-midi / Indispo, état géré en local, **sans appel API, sans persistance**).
+- **Hors périmètre** : la création réelle de créneaux (point 11 d'« À venir ») ; la sauvegarde des disponibilités (point 12) ; l'identité du formateur connecté.
+- **Critères d'acceptation** :
+  - Étant donné l'écran, quand on clique sur l'onglet « Disponibilités », alors la grille Matin/Après-midi/Indispo par jour s'affiche à la place du calendrier.
+  - Étant donné l'écran Disponibilités, quand on clique sur un bouton Matin/Après-midi/Indispo, alors son état actif change visuellement (local, non sauvegardé).
+- **Hypothèse de l'équipe couverte** : aucune — préparation de l'écran formateur, pas encore branché sur une hypothèse vérifiable.
+- **Codage estimé** : 4 à 6 minutes.
+- **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css` (aucun fichier `api/`).
+- **Tests unitaires prévus** : aucun — balisage/interaction locale pure, pas de logique métier ajoutée.
+- **Étapes ajoutées à la démo** : aucune (écran encore mocké, non branché sur une donnée réelle).
+- **Bilan** :
+  - Temps restant annoncé au début : 10 minutes (répondu le 2026-11-18, déficit de capacité identique aux itérations précédentes, non reposé en question explicite — le développeur a répondu « laisse selon ton découpage », confirmant le découpage proposé en 2 itérations (5 et 11) plutôt que tout en bloc).
+  - Codage réel : **moins d'une minute**.
+  - Critères satisfaits : les 2 — l'onglet « Disponibilités » affiche la grille Matin/Après-midi/Indispo par jour à la place du calendrier ; chaque bouton bascule son état actif localement (Indispo exclusif des deux autres).
+  - Reporté : rien de prévu n'a été coupé. La sauvegarde réelle des disponibilités et la création de créneaux restent hors périmètre (points 11 et 12 d'« À venir »).
+  - Bloqué/refusé par le harnais : rien — `./scripts/verifier-deployabilite.sh` n'a signalé aucune borne, `npm test` passait avant le signal (7/7, inchangé — pas de logique métier ajoutée, interaction locale pure).
+  - **Modifications** :
+    - `frontend/src/app/page.tsx` — ajoute l'état `onglet` (bascule Sessions/Disponibilités), l'écran Disponibilités avec données mockées (`dispoMockInitiale`) et sa logique de bascule locale (`basculer`) ; sert les 2 critères.
+    - `frontend/src/app/page.module.css` — styles des onglets et de la grille de disponibilités (boutons actifs/inactifs/indispo).
+  - Version 5 signalée à PM Lab le 2026-11-18T16:18:44Z, à `https://edition20-team32.exaltemps-space.com`.
 
 ## Itération 4 : structure et style de la vue détaillée d'une réservation, avec des données mockées
 

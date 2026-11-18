@@ -30,10 +30,34 @@ const libelleEquipe: Record<DetailMock["equipe"], string> = {
   a_affecter: "À affecter",
 };
 
+type Dispo = { matin: boolean; aprem: boolean; indispo: boolean };
+
+const joursDispo = ["Lundi 23 juin", "Mardi 24 juin", "Mercredi 25 juin", "Jeudi 26 juin", "Vendredi 27 juin"];
+
+const dispoMockInitiale: Record<string, Dispo> = {
+  "Lundi 23 juin": { matin: true, aprem: true, indispo: false },
+  "Mardi 24 juin": { matin: true, aprem: false, indispo: false },
+  "Mercredi 25 juin": { matin: false, aprem: false, indispo: true },
+  "Jeudi 26 juin": { matin: true, aprem: true, indispo: false },
+  "Vendredi 27 juin": { matin: false, aprem: true, indispo: false },
+};
+
 export default function Home() {
   const [creneaux, setCreneaux] = useState<Creneau[]>([]);
   const [erreur, setErreur] = useState<string | null>(null);
   const [detailId, setDetailId] = useState<string | null>(null);
+  const [onglet, setOnglet] = useState<"sessions" | "disponibilites">("sessions");
+  const [dispos, setDispos] = useState<Record<string, Dispo>>(dispoMockInitiale);
+
+  function basculer(jour: string, periode: "matin" | "aprem" | "indispo") {
+    setDispos((actuelles) => {
+      const dispo = actuelles[jour];
+      if (periode === "indispo") {
+        return { ...actuelles, [jour]: { matin: false, aprem: false, indispo: !dispo.indispo } };
+      }
+      return { ...actuelles, [jour]: { ...dispo, indispo: false, [periode]: !dispo[periode] } };
+    });
+  }
 
   useEffect(() => {
     fetch("/api/v1/creneaux")
@@ -75,65 +99,123 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <h1 className={styles.titre}>Calendrier des formations · La Cloche</h1>
-        <p>Bloquez les créneaux que vous animez cette semaine.</p>
-        {erreur && (
-          <p className={styles.erreur} role="alert">
-            {erreur}
-          </p>
-        )}
-        <div className={styles.semaine}>
-          {Array.from(parJour.entries()).map(([jour, creneauxDuJour]) => (
-            <div key={jour} className={styles.jourColonne}>
-              <div className={styles.jourLabel}>{jour}</div>
-              <div className={styles.creneauxDuJour}>
-                {creneauxDuJour.map((creneau) => (
-                  <div key={creneau.id}>
-                    <button
-                      type="button"
-                      onClick={() => (creneau.bloque ? annuler(creneau.id) : bloquer(creneau.id))}
-                      className={creneau.bloque ? styles.creneauBloque : styles.creneauDispo}
-                    >
-                      {creneau.horaire}
-                      {creneau.bloque ? " · Bloqué (annuler)" : ""}
-                    </button>
-                    <button type="button" className={styles.lienDetail} onClick={() => setDetailId(creneau.id)}>
-                      Voir le détail
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+        <div className={styles.onglets}>
+          <button
+            type="button"
+            className={onglet === "sessions" ? styles.ongletActif : styles.ongletInactif}
+            onClick={() => setOnglet("sessions")}
+          >
+            Sessions
+          </button>
+          <button
+            type="button"
+            className={onglet === "disponibilites" ? styles.ongletActif : styles.ongletInactif}
+            onClick={() => setOnglet("disponibilites")}
+          >
+            Disponibilités
+          </button>
         </div>
-        {detailId &&
-          (() => {
-            const creneau = creneaux.find((c) => c.id === detailId);
-            const detail = detailsMock[detailId];
-            if (!creneau || !detail) return null;
-            return (
-              <div className={styles.vueDetail}>
-                <div className={styles.vueDetailEntete}>
-                  <button type="button" className={styles.lienDetail} onClick={() => setDetailId(null)}>
-                    ← Retour
-                  </button>
-                  <h2>{creneau.jour}</h2>
-                  <p>{creneau.horaire}</p>
+        {onglet === "sessions" && (
+          <>
+            <p>Bloquez les créneaux que vous animez cette semaine.</p>
+            {erreur && (
+              <p className={styles.erreur} role="alert">
+                {erreur}
+              </p>
+            )}
+            <div className={styles.semaine}>
+              {Array.from(parJour.entries()).map(([jour, creneauxDuJour]) => (
+                <div key={jour} className={styles.jourColonne}>
+                  <div className={styles.jourLabel}>{jour}</div>
+                  <div className={styles.creneauxDuJour}>
+                    {creneauxDuJour.map((creneau) => (
+                      <div key={creneau.id}>
+                        <button
+                          type="button"
+                          onClick={() => (creneau.bloque ? annuler(creneau.id) : bloquer(creneau.id))}
+                          className={creneau.bloque ? styles.creneauBloque : styles.creneauDispo}
+                        >
+                          {creneau.horaire}
+                          {creneau.bloque ? " · Bloqué (annuler)" : ""}
+                        </button>
+                        <button type="button" className={styles.lienDetail} onClick={() => setDetailId(creneau.id)}>
+                          Voir le détail
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className={styles.detailLigne}>
-                  <span>Tarif</span>
-                  <strong>{detail.tarif}</strong>
-                </div>
-                <div className={styles.detailLigne}>
-                  <span>Salles</span>
-                  <strong>{detail.salles}</strong>
-                </div>
-                <div className={styles.detailLigne}>
-                  <span>Équipe</span>
-                  <strong className={styles[`pastille_${detail.equipe}`]}>{libelleEquipe[detail.equipe]}</strong>
-                </div>
-              </div>
-            );
-          })()}
+              ))}
+            </div>
+            {detailId &&
+              (() => {
+                const creneau = creneaux.find((c) => c.id === detailId);
+                const detail = detailsMock[detailId];
+                if (!creneau || !detail) return null;
+                return (
+                  <div className={styles.vueDetail}>
+                    <div className={styles.vueDetailEntete}>
+                      <button type="button" className={styles.lienDetail} onClick={() => setDetailId(null)}>
+                        ← Retour
+                      </button>
+                      <h2>{creneau.jour}</h2>
+                      <p>{creneau.horaire}</p>
+                    </div>
+                    <div className={styles.detailLigne}>
+                      <span>Tarif</span>
+                      <strong>{detail.tarif}</strong>
+                    </div>
+                    <div className={styles.detailLigne}>
+                      <span>Salles</span>
+                      <strong>{detail.salles}</strong>
+                    </div>
+                    <div className={styles.detailLigne}>
+                      <span>Équipe</span>
+                      <strong className={styles[`pastille_${detail.equipe}`]}>{libelleEquipe[detail.equipe]}</strong>
+                    </div>
+                  </div>
+                );
+              })()}
+          </>
+        )}
+        {onglet === "disponibilites" && (
+          <>
+            <p>Indiquez vos créneaux disponibles pour cette semaine (non sauvegardé pour l&apos;instant).</p>
+            <div className={styles.dispoListe}>
+              {joursDispo.map((jour) => {
+                const dispo = dispos[jour];
+                return (
+                  <div key={jour} className={styles.dispoLigne}>
+                    <span className={styles.dispoJour}>{jour}</span>
+                    <div className={styles.dispoBoutons}>
+                      <button
+                        type="button"
+                        className={dispo.matin ? styles.dispoActif : styles.dispoInactif}
+                        onClick={() => basculer(jour, "matin")}
+                      >
+                        Matin
+                      </button>
+                      <button
+                        type="button"
+                        className={dispo.aprem ? styles.dispoActif : styles.dispoInactif}
+                        onClick={() => basculer(jour, "aprem")}
+                      >
+                        Après-midi
+                      </button>
+                      <button
+                        type="button"
+                        className={dispo.indispo ? styles.dispoActifIndispo : styles.dispoInactif}
+                        onClick={() => basculer(jour, "indispo")}
+                      >
+                        Indispo
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </main>
     </div>
   );

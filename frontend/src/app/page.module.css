@@ -278,3 +278,91 @@ a.secondary {
 .pastille_a_affecter {
   color: #8f8f8f;
 }
+
+.onglets {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0 16px;
+  border-bottom: 1px solid #dde3ea;
+  width: 100%;
+}
+
+.ongletActif,
+.ongletInactif {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 4px;
+  cursor: pointer;
+}
+
+.ongletActif {
+  color: #004c9a;
+  border-bottom-color: #004c9a;
+}
+
+.ongletInactif {
+  color: #8f8f8f;
+}
+
+.dispoListe {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.dispoLigne {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #f4f6f9;
+  border: 1px solid #dde3ea;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.dispoJour {
+  font-weight: 700;
+  color: #2b5672;
+  font-size: 13px;
+}
+
+.dispoBoutons {
+  display: flex;
+  gap: 6px;
+}
+
+.dispoActif,
+.dispoActifIndispo,
+.dispoInactif {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.dispoInactif {
+  background: #fff;
+  color: #8f8f8f;
+  border: 1px solid #dde3ea;
+}
+
+.dispoActif {
+  background: #004c9a;
+  color: #fff;
+}
+
+.dispoActifIndispo {
+  background: #cf4b31;
+  color: #fff;
+}
