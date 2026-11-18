@@ -251,3 +251,29 @@ Le développeur a demandé, en plus de l'itération 3 : (a) associer une réserv
     - `frontend/src/app/page.tsx` — ajoute le bandeau identité + en-tête 3 lignes ; renomme `sessionCarte`→`sessionLigne` dans un conteneur unique `sessionBloc` ; renomme les classes de statut `pastille_*`→`badge_*`.
     - `frontend/src/app/page.module.css` — `.identiteBarre`, `.entete*` (nouveau) ; `.sessionBloc`/`.sessionLigne` (fusion visuelle, séparateurs) remplacent `.sessionListe`/`.sessionCarte` ; `.badge_prete`/`.badge_manquant`/`.badge_a_affecter`/`.badge_todo` (fond coloré) remplacent `.pastille_*` ; `.main` centré (`align-items: center`) pour que tous les blocs à largeur fixe soient centrés.
   - Version 8 signalée à PM Lab le 2026-11-18T16:32:50Z.
+
+## Itération 9 : calcul réel de complétude d'équipe (2 formateurs requis, liste statique de 4)
+
+- **Dans le périmètre** : règle fixée par le développeur (préalable au point 10 d'« À venir », désormais levé) : chaque session requiert 2 formateurs ; une liste statique de 4 formateurs (`Amadou`, `Claire`, `Sofiane`, `Lina`) ; assignation par case à cocher dans l'écran détail ; le badge (liste et détail) se calcule désormais à partir du nombre assigné (0 → « À affecter », 1 → « N formateur(s) manquant(s) », 2 → « Équipe prête ») au lieu d'une valeur mockée.
+- **Hors périmètre** : la persistance des assignations (état local, perdu au rechargement) ; la limite stricte à 2 assignations (on peut cocher plus, le badge reste « prête ») ; l'identité réelle des formateurs (toujours en dur).
+- **Critères d'acceptation** :
+  - Étant donné une session sans formateur assigné, le badge affiche « À affecter ».
+  - Étant donné une session avec 1 formateur assigné sur 2, le badge affiche « 1 formateur manquant ».
+  - Étant donné une session avec 2 formateurs assignés, le badge affiche « Équipe prête », dans la liste et dans l'écran détail.
+- **Hypothèse de l'équipe couverte** : levée du ❓ point 10 — règle donnée par le développeur en session.
+- **Codage estimé** : 3 à 5 minutes.
+- **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css`, `frontend/src/app/equipe.ts` (nouveau), `frontend/src/app/equipe.test.ts` (nouveau).
+- **Tests unitaires prévus** : 3-4, sur `calculerStatutEquipe`/`libelleStatutEquipe` (règle de calcul pure).
+- **Étapes ajoutées à la démo** : aucune (budget).
+- **Bilan** :
+  - Temps restant annoncé : 5 min (2026-11-18T16:35:xx) — déficit connu et assumé, pattern établi.
+  - Codage réel : 1 min, sans dépassement.
+  - Critères satisfaits : les 3.
+  - Écart : build Next a échoué une première fois (import `./equipe.ts` avec extension, refusé par le compilateur TS du frontend contrairement à `api/` qui l'exige) — corrigé immédiatement (import sans extension), rebuild réussi.
+  - Harnais : aucun blocage ; `npm test` 11/11 (7 api + 4 frontend, nouveaux) ; déployabilité « aucune borne franchie ».
+  - **Modifications** :
+    - `frontend/src/app/equipe.ts` (nouveau) — `calculerStatutEquipe`/`libelleStatutEquipe`, règle de calcul pure, testée.
+    - `frontend/src/app/equipe.test.ts` (nouveau) — 4 tests.
+    - `frontend/src/app/page.tsx` — remplace le champ mocké `equipe` par un calcul réel à partir d'un état `assignations` (liste de 4 formateurs, case à cocher dans l'écran détail) ; sert les 3 critères.
+    - `frontend/src/app/page.module.css` — `.formateursListe`/`.formateurLigne`.
+  - Version 9 signalée à PM Lab le 2026-11-18T16:38:40Z.

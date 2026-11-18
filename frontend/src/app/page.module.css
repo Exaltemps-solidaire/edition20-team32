@@ -521,3 +521,20 @@ a.secondary {
   background: #f4f6f9;
   color: #8f8f8f;
 }
+
+.formateursListe {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #dde3ea;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formateurLigne {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #2b5672;
+}
