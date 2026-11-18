@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import { calculerStatutEquipe, libelleStatutEquipe } from "./equipe";
 import { libelleDemiJournee } from "./horaire";
+import { formatHoraire, formatJour } from "./formulaireDate";
 
 type Creneau = {
   id: string;
@@ -56,8 +57,9 @@ export default function Home() {
   const [onglet, setOnglet] = useState<"sessions" | "disponibilites">("sessions");
   const [dispos, setDispos] = useState<Record<string, Dispo>>(dispoMockInitiale);
   const [assignations, setAssignations] = useState<Record<string, string[]>>(assignationsInitiales);
-  const [nouveauJour, setNouveauJour] = useState("");
-  const [nouvelHoraire, setNouvelHoraire] = useState("");
+  const [dateChoisie, setDateChoisie] = useState("");
+  const [heureDebut, setHeureDebut] = useState("");
+  const [heureFin, setHeureFin] = useState("");
 
   function basculerFormateur(creneauId: string, nom: string) {
     setAssignations((actuelles) => {
@@ -108,7 +110,9 @@ export default function Home() {
 
   async function ajouterCreneau() {
     setErreur(null);
-    const parametres = new URLSearchParams({ jour: nouveauJour, horaire: nouvelHoraire });
+    const jour = formatJour(dateChoisie);
+    const horaire = formatHoraire(heureDebut, heureFin);
+    const parametres = new URLSearchParams({ jour, horaire });
     const reponse = await fetch(`/api/v1/creneaux?${parametres.toString()}`, { method: "POST" });
     if (!reponse.ok) {
       setErreur("Ce créneau n'a pas pu être créé.");
@@ -116,8 +120,9 @@ export default function Home() {
     }
     const creneau: Creneau = await reponse.json();
     setCreneaux((actuels) => [...actuels, creneau]);
-    setNouveauJour("");
-    setNouvelHoraire("");
+    setDateChoisie("");
+    setHeureDebut("");
+    setHeureFin("");
   }
 
   return (
@@ -225,14 +230,13 @@ export default function Home() {
             })()
           : onglet === "sessions" && (
               <>
-                <p>Bloquez les créneaux que vous animez cette semaine.</p>
                 {erreur && (
                   <p className={styles.erreur} role="alert">
                     {erreur}
                   </p>
                 )}
-                <div className={styles.titreSection}>Sessions prévues</div>
                 <div className={styles.sessionBloc}>
+                  <div className={styles.titreSection}>Sessions prévues</div>
                   {creneaux.map((creneau) => {
                     const [, jourNum, mois] = creneau.jour.split(" ");
                     const assignes = assignations[creneau.id] ?? [];
@@ -264,21 +268,13 @@ export default function Home() {
                     );
                   })}
                 </div>
-                <div className={styles.formulaireAjout}>
-                  <input
-                    type="text"
-                    placeholder="Jour (ex. Vendredi 27 juin)"
-                    value={nouveauJour}
-                    onChange={(e) => setNouveauJour(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Horaire (ex. 9 h – 12 h)"
-                    value={nouvelHoraire}
-                    onChange={(e) => setNouvelHoraire(e.target.value)}
-                  />
-                  <button type="button" onClick={ajouterCreneau} disabled={!nouveauJour || !nouvelHoraire}>
-                    Ajouter un créneau
+                <div className={styles.barreBas}>
+                  <button
+                    type="button"
+                    className={styles.boutonPrincipal}
+                    onClick={() => setOnglet("disponibilites")}
+                  >
+                    Voir les disponibilités de la semaine
                   </button>
                 </div>
               </>
@@ -318,6 +314,21 @@ export default function Home() {
                   </div>
                 );
               })}
+            </div>
+            <div className={styles.carte}>
+              <div className={styles.carteTitre}>Ajouter une session</div>
+              <div className={styles.formulaireAjout}>
+                <input type="date" value={dateChoisie} onChange={(e) => setDateChoisie(e.target.value)} />
+                <input type="time" value={heureDebut} onChange={(e) => setHeureDebut(e.target.value)} />
+                <input type="time" value={heureFin} onChange={(e) => setHeureFin(e.target.value)} />
+                <button
+                  type="button"
+                  onClick={ajouterCreneau}
+                  disabled={!dateChoisie || !heureDebut || !heureFin}
+                >
+                  Ajouter la session
+                </button>
+              </div>
             </div>
           </>
         )}

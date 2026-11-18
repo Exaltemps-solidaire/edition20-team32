@@ -689,3 +689,23 @@ a.secondary {
   background: #fef0e0;
   color: #c07a20;
 }
+
+.barreBas {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 12px;
+}
+
+.boutonPrincipal {
+  display: block;
+  width: 100%;
+  background: #004c9a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}

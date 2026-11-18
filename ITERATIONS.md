@@ -400,3 +400,30 @@ Le développeur a demandé, en plus de l'itération 3 : (a) associer une réserv
     - `frontend/src/app/page.module.css` — ajoute `.carte`, `.carteTitre`, `.detailSection`/`.detailRangee`/`.detailCle`/`.detailValeur`, `.equipeRequis`, `.equipeItem`/`.equipeNom`/`.equipeRole`, `.pillOk`/`.pillWarning` (repris de la maquette non retenue).
   - Déployé : image `frontend` seule reconstruite et poussée, conteneur recréé, nouveau code vérifié présent dans le conteneur.
   - Version 14 signalée à PM Lab le 2026-11-18T17:01:21Z.
+
+## Itération 15 : la création de session déménage sur l'écran Disponibilités, avec des date/time pickers
+
+- **Dans le périmètre** : suppression de la phrase « Bloquez les créneaux que vous animez cette semaine. » (obsolète depuis l'itération 13) ; le titre « Sessions prévues » devient le premier élément de la carte liste (comme `.card`/`.card-title` de la maquette, au lieu d'être un élément séparé au-dessus) ; un bouton « Voir les disponibilités de la semaine » (repris du `.bottom-bar`/`.btn-primary` de la maquette) en bas de la liste bascule vers l'écran Disponibilités ; le formulaire de création de créneau déménage sur cet écran, avec un `<input type="date">` et deux `<input type="time">` (début/fin) au lieu de champs texte libres.
+- **Hors périmètre** : suppression de l'onglet « Disponibilités » (les deux chemins coexistent) ; validation de cohérence des horaires (ex. fin avant début).
+- **Critères d'acceptation** :
+  - Étant donné l'écran Sessions, la phrase d'instruction a disparu et le titre « Sessions prévues » est à l'intérieur de la carte contenant la liste.
+  - Étant donné l'écran Sessions, un bouton pleine largeur « Voir les disponibilités de la semaine » en bas de la carte bascule vers l'écran Disponibilités.
+  - Étant donné l'écran Disponibilités, une carte « Ajouter une session » avec un sélecteur de date et deux sélecteurs d'heure crée un créneau réel (même route `POST /api/v1/creneaux` qu'à l'itération 12) avec le format d'affichage existant.
+- **Hypothèse de l'équipe couverte** : aucune — retour d'ergonomie du développeur.
+- **Codage estimé** : 5 minutes.
+- **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css`, `frontend/src/app/formulaireDate.ts` (nouveau), `frontend/src/app/formulaireDate.test.ts` (nouveau).
+- **Tests unitaires prévus** : 4, sur `formatJour` et `formatHoraire` (conversion date/heure ISO vers le libellé affiché).
+- **Étapes ajoutées à la démo** : aucune (reporté).
+- **Bilan** :
+  - Temps restant annoncé : 5 min (2026-11-18T17:06:xx) — même déficit assumé que les itérations précédentes ; le développeur a choisi de continuer.
+  - Codage réel : 1 min, sans dépassement.
+  - Critères satisfaits : les trois.
+  - Écart : aucune validation si l'heure de fin précède l'heure de début (laissé à la charge de l'utilisateur, hors budget).
+  - Harnais : aucun blocage ; `npm test` 21/21 (10 api + 11 frontend) ; déployabilité « aucune borne franchie ».
+  - **Modifications** :
+    - `frontend/src/app/formulaireDate.ts` — fonctions pures `formatJour` (date ISO → « Vendredi 27 juin ») et `formatHoraire` (deux heures ISO → « 9 h – 12 h »).
+    - `frontend/src/app/formulaireDate.test.ts` — 4 tests.
+    - `frontend/src/app/page.tsx` — retire la phrase d'instruction ; déplace le titre de section dans la carte liste ; ajoute le bouton « Voir les disponibilités de la semaine » ; déplace le formulaire de création (désormais date/time pickers) sur l'écran Disponibilités.
+    - `frontend/src/app/page.module.css` — ajoute `.barreBas`/`.boutonPrincipal` (style `.bottom-bar`/`.btn-primary` de la maquette).
+  - Déployé : image `frontend` seule reconstruite et poussée, conteneur recréé, présence du nouveau bouton vérifiée dans le conteneur.
+  - Version 15 signalée à PM Lab le 2026-11-18T17:09:42Z.
