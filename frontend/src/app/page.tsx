@@ -55,6 +55,8 @@ export default function Home() {
   const [onglet, setOnglet] = useState<"sessions" | "disponibilites">("sessions");
   const [dispos, setDispos] = useState<Record<string, Dispo>>(dispoMockInitiale);
   const [assignations, setAssignations] = useState<Record<string, string[]>>(assignationsInitiales);
+  const [nouveauJour, setNouveauJour] = useState("");
+  const [nouvelHoraire, setNouvelHoraire] = useState("");
 
   function basculerFormateur(creneauId: string, nom: string) {
     setAssignations((actuelles) => {
@@ -101,6 +103,20 @@ export default function Home() {
     }
     const creneau: Creneau = await reponse.json();
     setCreneaux((actuels) => actuels.map((c) => (c.id === creneau.id ? creneau : c)));
+  }
+
+  async function ajouterCreneau() {
+    setErreur(null);
+    const parametres = new URLSearchParams({ jour: nouveauJour, horaire: nouvelHoraire });
+    const reponse = await fetch(`/api/v1/creneaux?${parametres.toString()}`, { method: "POST" });
+    if (!reponse.ok) {
+      setErreur("Ce créneau n'a pas pu être créé.");
+      return;
+    }
+    const creneau: Creneau = await reponse.json();
+    setCreneaux((actuels) => [...actuels, creneau]);
+    setNouveauJour("");
+    setNouvelHoraire("");
   }
 
   return (
@@ -227,6 +243,23 @@ export default function Home() {
                       </div>
                     );
                   })}
+                </div>
+                <div className={styles.formulaireAjout}>
+                  <input
+                    type="text"
+                    placeholder="Jour (ex. Vendredi 27 juin)"
+                    value={nouveauJour}
+                    onChange={(e) => setNouveauJour(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Horaire (ex. 9 h – 12 h)"
+                    value={nouvelHoraire}
+                    onChange={(e) => setNouvelHoraire(e.target.value)}
+                  />
+                  <button type="button" onClick={ajouterCreneau} disabled={!nouveauJour || !nouvelHoraire}>
+                    Ajouter un créneau
+                  </button>
                 </div>
               </>
             )}

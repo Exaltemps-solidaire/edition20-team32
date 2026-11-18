@@ -43,3 +43,15 @@ export function annulerCreneau(id: string): ResultatAnnulation {
   creneau.bloque = false;
   return { ok: true, creneau };
 }
+
+export type ResultatCreation =
+  | { ok: true; creneau: Creneau }
+  | { ok: false; erreur: "jour_requis" | "horaire_requis" };
+
+export function creerCreneau(entree: { jour: string | null; horaire: string | null }): ResultatCreation {
+  if (!entree.jour) return { ok: false, erreur: "jour_requis" };
+  if (!entree.horaire) return { ok: false, erreur: "horaire_requis" };
+  const creneau: Creneau = { id: `creneau-${creneaux.length + 1}`, jour: entree.jour, horaire: entree.horaire, bloque: false };
+  creneaux.push(creneau);
+  return { ok: true, creneau };
+}

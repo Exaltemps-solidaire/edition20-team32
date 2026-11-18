@@ -322,3 +322,32 @@ Le développeur a demandé, en plus de l'itération 3 : (a) associer une réserv
   - **Modifications** :
     - `frontend/src/app/page.tsx` — l'en-tête générique et le bandeau d'onglets ne s'affichent plus quand `onglet === "sessions" && detailId` ; l'écran détail (bouton retour + titre + horaire déjà existants) fait désormais office d'en-tête.
   - Version 11 signalée à PM Lab le 2026-11-18T16:45:46Z.
+
+## Itération 12 : créer un créneau réellement (point 11 d'« À venir »)
+
+- **Dans le périmètre** : un formulaire minimal (jour + horaire en texte libre) sous la liste des sessions, qui appelle une vraie route API (`POST /api/v1/creneaux`) et ajoute le créneau créé à la liste affichée.
+- **Hors périmètre** : validation avancée au-delà de « champ requis » ; body JSON (voir écart) ; suppression/édition d'un créneau ; association d'un lieu ou d'un titre au créneau créé (reste `"todo"` comme les créneaux existants).
+- **Critères d'acceptation** :
+  - Étant donné le formulaire rempli (jour et horaire non vides), quand je clique sur « Ajouter un créneau », alors le nouveau créneau apparaît dans la liste des sessions.
+  - Étant donné le formulaire avec un champ vide, le bouton « Ajouter un créneau » est désactivé.
+  - Étant donné la route `POST /api/v1/creneaux` appelée sans jour ou sans horaire, elle répond 400 avec une erreur explicite (`jour_requis`/`horaire_requis`).
+- **Hypothèse de l'équipe couverte** : aucune — fonctionnalité listée en « À venir » depuis l'itération 6.
+- **Codage estimé** : 5 minutes.
+- **Fichiers prévus** : `api/src/creneaux.ts`, `api/src/creneaux.test.ts`, `api/src/routes.ts`, `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css`.
+- **Tests unitaires prévus** : 3, sur `creerCreneau` (création réussie, jour manquant, horaire manquant).
+- **Étapes ajoutées à la démo** : aucune (budget insuffisant ce tour-ci, reporté).
+- **Bilan** :
+  - Temps restant annoncé : 5 min (2026-11-18T16:47:xx) — déficit assumé comme pour les itérations précédentes (codage + publication + tour de test de l'équipe dépassent largement 5 minutes) ; le développeur a choisi de continuer.
+  - ✂️ Écart assumé : création par **paramètres d'URL** (`?jour=...&horaire=...`), pas par corps JSON — le serveur `http` natif (`api/src/server.ts`) ne fait aucun parsing de corps de requête, et en ajouter aurait dépassé le budget de 5 minutes. Pas de validation de format (date, horaire) au-delà de « champ requis ».
+  - Codage réel : 4 min, sans dépassement.
+  - Critères satisfaits : les trois.
+  - Écart : création sans corps JSON (voir ✂️ ci-dessus) ; démo (`e2e/demo.spec.ts`) non mise à jour, reportée à une itération avec plus de marge.
+  - Harnais : aucun blocage final (un blocage ESLint intermédiaire sur un import non utilisé, corrigé avant la fin) ; `npm test` 14/14 (10 api + 4 frontend) ; déployabilité « aucune borne franchie ».
+  - **Modifications** :
+    - `api/src/creneaux.ts` — ajoute le type `ResultatCreation` et la fonction pure `creerCreneau`.
+    - `api/src/creneaux.test.ts` — 3 tests sur `creerCreneau`.
+    - `api/src/routes.ts` — ajoute la route `POST /api/v1/creneaux` (paramètres d'URL via `URLSearchParams`).
+    - `frontend/src/app/page.tsx` — état `nouveauJour`/`nouvelHoraire`, fonction `ajouterCreneau`, formulaire sous la liste des sessions.
+    - `frontend/src/app/page.module.css` — `.formulaireAjout` (inputs + bouton, désactivé si un champ est vide).
+  - Déployé : images `api` et `frontend` reconstruites et poussées (première fois que l'API change dans ce segment), conteneurs recréés, `POST /api/v1/creneaux` vérifié de bout en bout depuis la machine (créneau créé et listé).
+  - Version 12 signalée à PM Lab le 2026-11-18T16:52:03Z.

@@ -555,3 +555,37 @@ a.secondary {
   font-size: 14px;
   color: #2b5672;
 }
+
+.formulaireAjout {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 420px;
+  margin-top: 12px;
+}
+
+.formulaireAjout input {
+  font-family: inherit;
+  font-size: 13px;
+  padding: 8px 10px;
+  border: 1px solid #dde3ea;
+  border-radius: 6px;
+}
+
+.formulaireAjout button {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #004c9a;
+  color: #fff;
+  cursor: pointer;
+}
+
+.formulaireAjout button:disabled {
+  background: #b7c6d6;
+  cursor: not-allowed;
+}
