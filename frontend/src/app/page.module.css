@@ -236,23 +236,30 @@ a.secondary {
   padding: 2px 0;
 }
 
-.vueDetail {
-  max-width: 375px;
-  margin: 24px auto 0;
+.ecranDetail {
   width: 100%;
-  background: #f4f6f9;
-  border: 1px solid #dde3ea;
-  border-radius: 8px;
-  padding: 16px;
+  max-width: 420px;
 }
 
-.vueDetailEntete h2 {
+.boutonRetour {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: #004c9a;
+  cursor: pointer;
+  padding: 4px 0;
+  margin-bottom: 8px;
+}
+
+.ecranDetailTitre {
   margin: 4px 0 0;
   font-size: 18px;
   color: #2b5672;
 }
 
-.vueDetailEntete p {
+.ecranDetailSousTitre {
   margin: 2px 0 12px;
   font-size: 13px;
   color: #8f8f8f;

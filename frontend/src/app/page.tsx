@@ -108,85 +108,87 @@ export default function Home() {
             Disponibilités
           </button>
         </div>
-        {onglet === "sessions" && (
-          <>
-            <p>Bloquez les créneaux que vous animez cette semaine.</p>
-            {erreur && (
-              <p className={styles.erreur} role="alert">
-                {erreur}
-              </p>
+        {onglet === "sessions" && detailId
+          ? (() => {
+              const creneau = creneaux.find((c) => c.id === detailId);
+              const detail = detailsMock[detailId];
+              if (!creneau || !detail) return null;
+              return (
+                <div className={styles.ecranDetail}>
+                  <button type="button" className={styles.boutonRetour} onClick={() => setDetailId(null)}>
+                    ← Retour
+                  </button>
+                  <h2 className={styles.ecranDetailTitre}>{creneau.jour}</h2>
+                  <p className={styles.ecranDetailSousTitre}>{creneau.horaire}</p>
+                  <div className={styles.detailLigne}>
+                    <span>Tarif</span>
+                    <strong>{detail.tarif}</strong>
+                  </div>
+                  <div className={styles.detailLigne}>
+                    <span>Salles</span>
+                    <strong>{detail.salles}</strong>
+                  </div>
+                  <div className={styles.detailLigne}>
+                    <span>Équipe</span>
+                    <strong className={styles[`pastille_${detail.equipe}`]}>{libelleEquipe[detail.equipe]}</strong>
+                  </div>
+                </div>
+              );
+            })()
+          : onglet === "sessions" && (
+              <>
+                <p>Bloquez les créneaux que vous animez cette semaine.</p>
+                {erreur && (
+                  <p className={styles.erreur} role="alert">
+                    {erreur}
+                  </p>
+                )}
+                <div className={styles.sessionListe}>
+                  {creneaux.map((creneau) => {
+                    const [, jourNum, mois] = creneau.jour.split(" ");
+                    const detail = detailsMock[creneau.id];
+                    return (
+                      <div key={creneau.id} className={styles.sessionCarte}>
+                        <div className={styles.sessionDateBloc}>
+                          <div className={styles.sessionJourNum}>{jourNum}</div>
+                          <div className={styles.sessionMois}>{mois}</div>
+                        </div>
+                        <div className={styles.sessionCorps}>
+                          <div className={styles.sessionTitre}>todo</div>
+                          <div className={styles.sessionMeta}>{creneau.horaire}</div>
+                          <div className={styles.sessionEtiquettes}>
+                            <span className={styles.etiquette}>todo</span>
+                            <span className={styles.etiquette}>{detail ? detail.tarif : "todo"}</span>
+                          </div>
+                          <div className={styles.sessionActions}>
+                            <button
+                              type="button"
+                              onClick={() => (creneau.bloque ? annuler(creneau.id) : bloquer(creneau.id))}
+                              className={creneau.bloque ? styles.creneauBloque : styles.creneauDispo}
+                            >
+                              {creneau.horaire}
+                              {creneau.bloque ? " · Bloqué (annuler)" : ""}
+                            </button>
+                            <button
+                              type="button"
+                              className={styles.lienDetail}
+                              onClick={() => setDetailId(creneau.id)}
+                            >
+                              Voir le détail
+                            </button>
+                          </div>
+                        </div>
+                        <div className={styles.sessionStatut}>
+                          <span className={detail ? styles[`pastille_${detail.equipe}`] : styles.pastille_todo}>
+                            {detail ? libelleEquipe[detail.equipe] : "todo"}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
-            <div className={styles.sessionListe}>
-              {creneaux.map((creneau) => {
-                const [, jourNum, mois] = creneau.jour.split(" ");
-                const detail = detailsMock[creneau.id];
-                return (
-                  <div key={creneau.id} className={styles.sessionCarte}>
-                    <div className={styles.sessionDateBloc}>
-                      <div className={styles.sessionJourNum}>{jourNum}</div>
-                      <div className={styles.sessionMois}>{mois}</div>
-                    </div>
-                    <div className={styles.sessionCorps}>
-                      <div className={styles.sessionTitre}>todo</div>
-                      <div className={styles.sessionMeta}>{creneau.horaire}</div>
-                      <div className={styles.sessionEtiquettes}>
-                        <span className={styles.etiquette}>todo</span>
-                        <span className={styles.etiquette}>{detail ? detail.tarif : "todo"}</span>
-                      </div>
-                      <div className={styles.sessionActions}>
-                        <button
-                          type="button"
-                          onClick={() => (creneau.bloque ? annuler(creneau.id) : bloquer(creneau.id))}
-                          className={creneau.bloque ? styles.creneauBloque : styles.creneauDispo}
-                        >
-                          {creneau.horaire}
-                          {creneau.bloque ? " · Bloqué (annuler)" : ""}
-                        </button>
-                        <button type="button" className={styles.lienDetail} onClick={() => setDetailId(creneau.id)}>
-                          Voir le détail
-                        </button>
-                      </div>
-                    </div>
-                    <div className={styles.sessionStatut}>
-                      <span className={detail ? styles[`pastille_${detail.equipe}`] : styles.pastille_todo}>
-                        {detail ? libelleEquipe[detail.equipe] : "todo"}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            {detailId &&
-              (() => {
-                const creneau = creneaux.find((c) => c.id === detailId);
-                const detail = detailsMock[detailId];
-                if (!creneau || !detail) return null;
-                return (
-                  <div className={styles.vueDetail}>
-                    <div className={styles.vueDetailEntete}>
-                      <button type="button" className={styles.lienDetail} onClick={() => setDetailId(null)}>
-                        ← Retour
-                      </button>
-                      <h2>{creneau.jour}</h2>
-                      <p>{creneau.horaire}</p>
-                    </div>
-                    <div className={styles.detailLigne}>
-                      <span>Tarif</span>
-                      <strong>{detail.tarif}</strong>
-                    </div>
-                    <div className={styles.detailLigne}>
-                      <span>Salles</span>
-                      <strong>{detail.salles}</strong>
-                    </div>
-                    <div className={styles.detailLigne}>
-                      <span>Équipe</span>
-                      <strong className={styles[`pastille_${detail.equipe}`]}>{libelleEquipe[detail.equipe]}</strong>
-                    </div>
-                  </div>
-                );
-              })()}
-          </>
-        )}
         {onglet === "disponibilites" && (
           <>
             <p>Indiquez vos créneaux disponibles pour cette semaine (non sauvegardé pour l&apos;instant).</p>

@@ -202,3 +202,26 @@ Le développeur a demandé, en plus de l'itération 3 : (a) associer une réserv
     - `frontend/src/app/page.tsx` — remplace le regroupement par jour (`parJour`, retiré) par une liste de cartes `sessionCarte` par créneau (bloc date, titre, méta, étiquettes, statut, actions) ; sert les 3 critères.
     - `frontend/src/app/page.module.css` — styles de la carte de session (`.sessionCarte`, `.sessionDateBloc`, `.etiquette`, `.pastille_todo`...), inspirés de l'écran « Sessions prévues » de la maquette non retenue.
   - Version 6 signalée à PM Lab le 2026-11-18T16:22:59Z, à `https://edition20-team32.exaltemps-space.com`.
+
+## Itération 7 : « Voir le détail » ouvre un écran séparé, pas un panneau en bas de page
+
+- **Dans le périmètre** : remplacer l'affichage actuel (panneau ajouté sous la liste des sessions) par un écran dédié en plein écran, comme l'écran 4 « Détail de la session » de la maquette non retenue : bouton « ← Retour » en haut, titre, puis les informations déjà mockées (tarif, salles, statut d'équipe). Clique sur « Voir le détail » → l'écran Sessions disparaît, remplacé par l'écran détail ; « ← Retour » revient à Sessions.
+- **Hors périmètre** : la création de créneaux (devient l'itération 8) ; toute nouvelle donnée ; le routing par URL (pas de nouvelle route Next.js, juste un état local qui bascule l'écran affiché).
+- **Critères d'acceptation** :
+  - Étant donné la liste des sessions, quand on clique sur « Voir le détail » d'une carte, alors l'écran Sessions est entièrement remplacé par l'écran détail (plus affiché en bas de la même page).
+  - Étant donné l'écran détail, quand on clique sur « ← Retour », alors on revient à la liste des sessions.
+- **Hypothèse de l'équipe couverte** : aucune — retour de style/navigation du développeur.
+- **Codage estimé** : 2 à 4 minutes.
+- **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css`.
+- **Tests unitaires prévus** : aucun — balisage/navigation locale pure.
+- **Étapes ajoutées à la démo** : aucune.
+- **Bilan** :
+  - Temps restant annoncé : 15 min (2026-11-18T16:25:xx).
+  - Codage réel : 4 min, sans dépassement.
+  - Critères satisfaits : les deux.
+  - Écart : aucun, conforme au plan.
+  - Harnais : aucun blocage, `npm test` 7/7, déployabilité « aucune borne franchie ».
+  - **Modifications** :
+    - `frontend/src/app/page.tsx` — la vue « sessions » devient soit la liste, soit l'écran détail (exclusifs), avec un bouton dédié « ← Retour » — sert les deux critères.
+    - `frontend/src/app/page.module.css` — `.vueDetail`/`.vueDetailEntete` remplacés par `.ecranDetail`/`.boutonRetour`/`.ecranDetailTitre`/`.ecranDetailSousTitre`.
+  - Version 7 signalée à PM Lab le 2026-11-18T16:30:20Z.
