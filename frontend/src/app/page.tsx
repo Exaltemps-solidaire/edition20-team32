@@ -178,6 +178,7 @@ export default function Home() {
                     {erreur}
                   </p>
                 )}
+                <div className={styles.titreSection}>Sessions prévues</div>
                 <div className={styles.sessionBloc}>
                   {creneaux.map((creneau) => {
                     const [, jourNum, mois] = creneau.jour.split(" ");

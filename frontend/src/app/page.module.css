@@ -342,31 +342,48 @@ a.secondary {
 
 .onglets {
   display: flex;
-  gap: 8px;
-  margin: 12px 0 16px;
-  border-bottom: 1px solid #dde3ea;
+  gap: 0;
   width: 100%;
+  max-width: 420px;
+  margin: 12px auto 16px;
+  background: #f4f6f9;
+  border: 1px solid #dde3ea;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .ongletActif,
 .ongletInactif {
-  background: none;
+  flex: 1;
+  background: #f4f6f9;
   border: none;
-  border-bottom: 2px solid transparent;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 8px 4px;
+  padding: 10px 4px;
   cursor: pointer;
+  transition: background 0.15s;
 }
 
 .ongletActif {
+  background: #fff;
   color: #004c9a;
-  border-bottom-color: #004c9a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .ongletInactif {
   color: #8f8f8f;
+}
+
+.titreSection {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #8f8f8f;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .dispoListe {

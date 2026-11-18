@@ -277,3 +277,26 @@ Le développeur a demandé, en plus de l'itération 3 : (a) associer une réserv
     - `frontend/src/app/page.tsx` — remplace le champ mocké `equipe` par un calcul réel à partir d'un état `assignations` (liste de 4 formateurs, case à cocher dans l'écran détail) ; sert les 3 critères.
     - `frontend/src/app/page.module.css` — `.formateursListe`/`.formateurLigne`.
   - Version 9 signalée à PM Lab le 2026-11-18T16:38:40Z.
+
+## Itération 10 : tabs et titre de section conformes à la maquette
+
+- **Dans le périmètre** : les onglets Sessions/Disponibilités reprennent le style `.view-tabs`/`.view-tab` de la maquette (un seul conteneur gris avec bordure arrondie, l'onglet actif sur fond blanc avec ombre légère), et le titre « Sessions prévues » (`.card-title` de la maquette) s'affiche juste au-dessus de la liste des sessions.
+- **Hors périmètre** : l'onglet « Disponibilités » (visuel inchangé à part le style des tabs partagé) ; tout nouvel écran.
+- **Critères d'acceptation** :
+  - Étant donné l'écran Sessions, les deux onglets apparaissent dans un même bandeau gris à bordure arrondie, l'onglet actif en blanc.
+  - Étant donné la liste des sessions affichée, le titre « Sessions prévues » apparaît juste au-dessus, en petites majuscules grises.
+- **Hypothèse de l'équipe couverte** : aucune — retour de style.
+- **Codage estimé** : 2 à 3 minutes.
+- **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css`.
+- **Tests unitaires prévus** : aucun — style pur.
+- **Étapes ajoutées à la démo** : aucune.
+- **Bilan** :
+  - Temps restant annoncé : 5 min (2026-11-18T16:40:xx) — même déficit assumé que les itérations précédentes.
+  - Codage réel : <1 min, sans dépassement.
+  - Critères satisfaits : les deux.
+  - Écart : aucun.
+  - Harnais : aucun blocage ; `npm test` 11/11 inchangé ; déployabilité « aucune borne franchie ».
+  - **Modifications** :
+    - `frontend/src/app/page.tsx` — ajoute `.titreSection` (« Sessions prévues ») juste avant `.sessionBloc`.
+    - `frontend/src/app/page.module.css` — `.onglets`/`.ongletActif`/`.ongletInactif` réécrits en bandeau à fond gris + onglet actif blanc/ombre (style `.view-tabs` de la maquette) ; `.titreSection` ajouté.
+  - Version 10 signalée à PM Lab le 2026-11-18T16:41:41Z.
