@@ -225,3 +225,29 @@ Le développeur a demandé, en plus de l'itération 3 : (a) associer une réserv
     - `frontend/src/app/page.tsx` — la vue « sessions » devient soit la liste, soit l'écran détail (exclusifs), avec un bouton dédié « ← Retour » — sert les deux critères.
     - `frontend/src/app/page.module.css` — `.vueDetail`/`.vueDetailEntete` remplacés par `.ecranDetail`/`.boutonRetour`/`.ecranDetailTitre`/`.ecranDetailSousTitre`.
   - Version 7 signalée à PM Lab le 2026-11-18T16:30:20Z.
+
+## Itération 8 : en-tête et liste des sessions stylés comme la maquette
+
+⚠️ Remplace la place initialement réservée à « créer un créneau » (texte de l'itération 7) : deux nouvelles demandes de style arrivées pendant le codage de l'itération 7 ont été groupées ici à la place, la création de créneau repasse en position 11 d'« À venir » (inchangée).
+
+- **Dans le périmètre** : en-tête conforme à l'écran 1 de la maquette non retenue (bandeau identité rouge « La Cloche · Antenne Île-de-France », puis sur-titre « Semaine du 23 au 27 juin 2026 », titre « Calendrier des formations », sous-titre « Vue coordinatrice de terrain »), le tout centré ; la liste des sessions devient un seul bloc visuel (carte unique avec séparateurs entre lignes, comme `.session-item` de la maquette) au lieu de cartes séparées ; les badges de statut d'équipe adoptent le style pastille à fond coloré de la maquette (`.badge-dispo`/`.badge-indispo`/`.badge-partiel`) au lieu d'un simple texte coloré.
+- **Hors périmètre** : toute nouvelle donnée ; les onglets Disponibilités (non touchés) ; la création de créneaux (reste point 11 d'« À venir »).
+- **Critères d'acceptation** :
+  - Étant donné l'écran Sessions, l'en-tête affiche les 4 lignes de la maquette, centré.
+  - Étant donné la liste des sessions, les lignes apparaissent comme un seul bloc continu (séparateurs horizontaux), pas des cartes séparées.
+  - Étant donné une session avec un statut d'équipe connu, le badge affiche un fond coloré (bleu/rouge/orange selon statut), pas juste du texte coloré.
+- **Hypothèse de l'équipe couverte** : aucune — retour de style du développeur.
+- **Codage estimé** : 3 à 5 minutes.
+- **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css`.
+- **Tests unitaires prévus** : aucun — balisage/style pur.
+- **Étapes ajoutées à la démo** : aucune.
+- **Bilan** :
+  - Temps restant annoncé : 5 min (2026-11-18T16:31:xx) — déficit connu (codage + publication + tour de test dépassent largement 5 min), développeur a choisi de continuer, pattern établi depuis les itérations précédentes.
+  - Codage réel : 1 min, sans dépassement.
+  - Critères satisfaits : les 3.
+  - Écart : le bandeau identité et l'en-tête sont centrés à largeur 420px (vue « téléphone »), pas en plein bord d'écran comme la maquette (qui est nativement un cadre de téléphone) — rendu équivalent dans le contexte de cette page.
+  - Harnais : aucun blocage, `npm test` 7/7 (inchangé), déployabilité « aucune borne franchie ».
+  - **Modifications** :
+    - `frontend/src/app/page.tsx` — ajoute le bandeau identité + en-tête 3 lignes ; renomme `sessionCarte`→`sessionLigne` dans un conteneur unique `sessionBloc` ; renomme les classes de statut `pastille_*`→`badge_*`.
+    - `frontend/src/app/page.module.css` — `.identiteBarre`, `.entete*` (nouveau) ; `.sessionBloc`/`.sessionLigne` (fusion visuelle, séparateurs) remplacent `.sessionListe`/`.sessionCarte` ; `.badge_prete`/`.badge_manquant`/`.badge_a_affecter`/`.badge_todo` (fond coloré) remplacent `.pastille_*` ; `.main` centré (`align-items: center`) pour que tous les blocs à largeur fixe soient centrés.
+  - Version 8 signalée à PM Lab le 2026-11-18T16:32:50Z.

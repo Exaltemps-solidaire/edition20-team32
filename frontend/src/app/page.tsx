@@ -91,7 +91,12 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <h1 className={styles.titre}>Calendrier des formations · La Cloche</h1>
+        <div className={styles.identiteBarre}>La Cloche · Antenne Île-de-France</div>
+        <div className={styles.entete}>
+          <div className={styles.enteteSup}>Semaine du 23 au 27 juin 2026</div>
+          <h1 className={styles.enteteTitre}>Calendrier des formations</h1>
+          <div className={styles.enteteSous}>Vue coordinatrice de terrain</div>
+        </div>
         <div className={styles.onglets}>
           <button
             type="button"
@@ -130,7 +135,7 @@ export default function Home() {
                   </div>
                   <div className={styles.detailLigne}>
                     <span>Équipe</span>
-                    <strong className={styles[`pastille_${detail.equipe}`]}>{libelleEquipe[detail.equipe]}</strong>
+                    <strong className={styles[`badge_${detail.equipe}`]}>{libelleEquipe[detail.equipe]}</strong>
                   </div>
                 </div>
               );
@@ -143,12 +148,12 @@ export default function Home() {
                     {erreur}
                   </p>
                 )}
-                <div className={styles.sessionListe}>
+                <div className={styles.sessionBloc}>
                   {creneaux.map((creneau) => {
                     const [, jourNum, mois] = creneau.jour.split(" ");
                     const detail = detailsMock[creneau.id];
                     return (
-                      <div key={creneau.id} className={styles.sessionCarte}>
+                      <div key={creneau.id} className={styles.sessionLigne}>
                         <div className={styles.sessionDateBloc}>
                           <div className={styles.sessionJourNum}>{jourNum}</div>
                           <div className={styles.sessionMois}>{mois}</div>
@@ -179,7 +184,7 @@ export default function Home() {
                           </div>
                         </div>
                         <div className={styles.sessionStatut}>
-                          <span className={detail ? styles[`pastille_${detail.equipe}`] : styles.pastille_todo}>
+                          <span className={detail ? styles[`badge_${detail.equipe}`] : styles.badge_todo}>
                             {detail ? libelleEquipe[detail.equipe] : "todo"}
                           </span>
                         </div>
