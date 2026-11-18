@@ -10,9 +10,30 @@ type Creneau = {
   bloque: boolean;
 };
 
+type DetailMock = {
+  tarif: "Gratuite" | "Payante";
+  salles: number;
+  equipe: "prete" | "manquant" | "a_affecter";
+};
+
+const detailsMock: Record<string, DetailMock> = {
+  "lun-matin": { tarif: "Gratuite", salles: 1, equipe: "prete" },
+  "lun-aprem": { tarif: "Gratuite", salles: 1, equipe: "a_affecter" },
+  "mar-matin": { tarif: "Payante", salles: 2, equipe: "manquant" },
+  "mer-matin": { tarif: "Gratuite", salles: 1, equipe: "a_affecter" },
+  "jeu-aprem": { tarif: "Payante", salles: 1, equipe: "prete" },
+};
+
+const libelleEquipe: Record<DetailMock["equipe"], string> = {
+  prete: "Équipe prête",
+  manquant: "1 formateur manquant",
+  a_affecter: "À affecter",
+};
+
 export default function Home() {
   const [creneaux, setCreneaux] = useState<Creneau[]>([]);
   const [erreur, setErreur] = useState<string | null>(null);
+  const [detailId, setDetailId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/v1/creneaux")
@@ -66,20 +87,53 @@ export default function Home() {
               <div className={styles.jourLabel}>{jour}</div>
               <div className={styles.creneauxDuJour}>
                 {creneauxDuJour.map((creneau) => (
-                  <button
-                    key={creneau.id}
-                    type="button"
-                    onClick={() => (creneau.bloque ? annuler(creneau.id) : bloquer(creneau.id))}
-                    className={creneau.bloque ? styles.creneauBloque : styles.creneauDispo}
-                  >
-                    {creneau.horaire}
-                    {creneau.bloque ? " · Bloqué (annuler)" : ""}
-                  </button>
+                  <div key={creneau.id}>
+                    <button
+                      type="button"
+                      onClick={() => (creneau.bloque ? annuler(creneau.id) : bloquer(creneau.id))}
+                      className={creneau.bloque ? styles.creneauBloque : styles.creneauDispo}
+                    >
+                      {creneau.horaire}
+                      {creneau.bloque ? " · Bloqué (annuler)" : ""}
+                    </button>
+                    <button type="button" className={styles.lienDetail} onClick={() => setDetailId(creneau.id)}>
+                      Voir le détail
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
           ))}
         </div>
+        {detailId &&
+          (() => {
+            const creneau = creneaux.find((c) => c.id === detailId);
+            const detail = detailsMock[detailId];
+            if (!creneau || !detail) return null;
+            return (
+              <div className={styles.vueDetail}>
+                <div className={styles.vueDetailEntete}>
+                  <button type="button" className={styles.lienDetail} onClick={() => setDetailId(null)}>
+                    ← Retour
+                  </button>
+                  <h2>{creneau.jour}</h2>
+                  <p>{creneau.horaire}</p>
+                </div>
+                <div className={styles.detailLigne}>
+                  <span>Tarif</span>
+                  <strong>{detail.tarif}</strong>
+                </div>
+                <div className={styles.detailLigne}>
+                  <span>Salles</span>
+                  <strong>{detail.salles}</strong>
+                </div>
+                <div className={styles.detailLigne}>
+                  <span>Équipe</span>
+                  <strong className={styles[`pastille_${detail.equipe}`]}>{libelleEquipe[detail.equipe]}</strong>
+                </div>
+              </div>
+            );
+          })()}
       </main>
     </div>
   );

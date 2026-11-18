@@ -123,9 +123,33 @@ Le reste de cette section part du principe que tu choisis l'option 1 (même sch�
 
 Le développeur a demandé, en plus de l'itération 3 : (a) associer une réservation à un formateur et à un commerçant nommés, (b) introduire la notion de commerçant pouvant visualiser ses propres réservations (un deuxième écran), (c) une vue détaillée par réservation reprenant la maquette — gratuit/payant, nombre de salles, et un indicateur de complétude de l'équipe d'animation (« N manquant » / « Équipe prête » / « à affecter »). Ce périmètre dépasse largement une itération (plusieurs écrans, un nouveau modèle de données, une nouvelle règle métier de complétude d'équipe) ; je propose de le découper ainsi, à la place des points 4 à 7 déjà listés :
 
-4. **Vue détaillée d'une réservation** (sur la base de la maquette) : gratuite/payante, nombre de salles, statut de l'équipe d'animation (« Équipe prête », « N manquant », « à affecter »). ❓ nécessite de fixer la règle de complétude (combien de formateurs par créneau, salarié/bénévole) avant de coder — actuellement non spécifiée dans la passation récupérée.
 5. **Association formateur/commerçant à une réservation** : un créneau bloqué porte le nom du formateur qui l'anime. ❓ préalable à la vue commerçant.
 6. **Calendrier commerçant en lecture seule** (créneaux disponibles uniquement).
 7. **Réservation d'un créneau par un commerçant**, avec son nom, + blocage automatique.
 8. **Deuxième vue : « Mes réservations »** côté commerçant.
 9. Rappel automatique 4 à 5 jours avant la formation (si le temps le permet — sinon hors périmètre du hackathon, à dire explicitement).
+10. Brancher la vue détaillée (itération 4) sur de vraies données et un vrai calcul de complétude d'équipe, une fois la règle fixée par les cadreurs — remplace les données mockées.
+
+## Itération 4 : structure et style de la vue détaillée d'une réservation, avec des données mockées
+
+- **Dans le périmètre** : un nouvel écran (accessible en cliquant sur un créneau bloqué depuis le calendrier), format resserré pensé mobile-vertical, inspiré de l'écran « Détail de la session » de la maquette non retenue. Affiche, en dur (données mockées, pas de nouvelle route API) : date/horaire, gratuite ou payante, nombre de salles, et un statut d'équipe parmi trois valeurs mockées (« Équipe prête », « N manquant », « à affecter »).
+- **Hors périmètre** : tout calcul réel de complétude d'équipe (❓ règle non fixée — voir point 5 d'« À venir ») ; la persistance ; la navigation retour n'a pas besoin d'être parfaite si le temps manque.
+- **Critères d'acceptation** :
+  - Étant donné un créneau du calendrier, quand on clique dessus, alors la vue détaillée s'affiche avec gratuite/payante, nombre de salles et un statut d'équipe (données mockées).
+  - Étant donné la vue détaillée, alors sa mise en page reste lisible en largeur réduite (format téléphone vertical, ~375px).
+- **Hypothèse de l'équipe couverte** : aucune — demande de visualisation de style, pas une hypothèse de la passation.
+- **Codage estimé** : 3 à 5 minutes.
+- **Fichiers prévus** : `frontend/src/app/page.tsx` (ou nouveau composant), `frontend/src/app/page.module.css` (≤ 5 fichiers, aucun fichier `api/`).
+- **Tests unitaires prévus** : aucun — balisage/style pur, pas de logique métier ajoutée.
+- **Étapes ajoutées à la démo** : aucune pour l'instant (écran de style, pas encore branché sur une vraie donnée) — à ajouter quand la vue sera réelle (point 10 ci-dessus).
+- **Bilan** :
+  - Temps restant annoncé au début : 10 minutes (répondu le 2026-11-18) ; déficit de capacité identique aux itérations 2 et 3, signalé brièvement sans reposer le menu complet (le développeur avait déjà choisi deux fois de continuer).
+  - Codage réel : **moins d'une minute**.
+  - Critères satisfaits : les 2 — un lien « Voir le détail » sous chaque créneau ouvre la vue (tarif, salles, statut d'équipe, données mockées par créneau) ; la vue est contenue dans une carte `max-width: 375px`, lisible en largeur téléphone.
+  - Écart volontaire avec la demande initiale : plutôt que de faire du clic sur le créneau lui-même le déclencheur (ce qui aurait entré en conflit avec bloquer/annuler de l'itération 3), j'ai ajouté un second lien dédié « Voir le détail » sous chaque créneau — à signaler (⚠️) si ce n'est pas l'interaction attendue.
+  - Reporté : rien de prévu n'a été coupé. Le vrai calcul de complétude d'équipe reste un ❓ en attente (point 10 d'« À venir »).
+  - Bloqué/refusé par le harnais : rien — `./scripts/verifier-deployabilite.sh` n'a signalé aucune borne, `npm test` passait avant le signal (7/7, inchangé — pas de logique métier ajoutée, balisage/style pur).
+  - **Modifications** :
+    - `frontend/src/app/page.tsx` — ajoute une donnée mockée par créneau (`detailsMock`), un lien « Voir le détail » par créneau, et le panneau de détail (tarif, salles, statut d'équipe) ; sert les 2 critères.
+    - `frontend/src/app/page.module.css` — styles du panneau resserré (`.vueDetail`, `.detailLigne`, pastilles de couleur par statut d'équipe).
+  - Version 4 signalée à PM Lab le 2026-11-18T16:15:51Z, à `https://edition20-team32.exaltemps-space.com`.

@@ -221,3 +221,60 @@ a.secondary {
 .creneauBloque:hover {
   background: #eed7d3;
 }
+
+.lienDetail {
+  display: block;
+  width: 100%;
+  margin-top: 2px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 11px;
+  color: #8f8f8f;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.vueDetail {
+  max-width: 375px;
+  margin: 24px auto 0;
+  width: 100%;
+  background: #f4f6f9;
+  border: 1px solid #dde3ea;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.vueDetailEntete h2 {
+  margin: 4px 0 0;
+  font-size: 18px;
+  color: #2b5672;
+}
+
+.vueDetailEntete p {
+  margin: 2px 0 12px;
+  font-size: 13px;
+  color: #8f8f8f;
+}
+
+.detailLigne {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid #dde3ea;
+  font-size: 14px;
+}
+
+.pastille_prete {
+  color: #1d7a45;
+}
+
+.pastille_manquant {
+  color: #cf4b31;
+}
+
+.pastille_a_affecter {
+  color: #8f8f8f;
+}
