@@ -107,27 +107,31 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <div className={styles.identiteBarre}>La Cloche · Antenne Île-de-France</div>
-        <div className={styles.entete}>
-          <div className={styles.enteteSup}>Semaine du 23 au 27 juin 2026</div>
-          <h1 className={styles.enteteTitre}>Calendrier des formations</h1>
-          <div className={styles.enteteSous}>Vue coordinatrice de terrain</div>
-        </div>
-        <div className={styles.onglets}>
-          <button
-            type="button"
-            className={onglet === "sessions" ? styles.ongletActif : styles.ongletInactif}
-            onClick={() => setOnglet("sessions")}
-          >
-            Sessions
-          </button>
-          <button
-            type="button"
-            className={onglet === "disponibilites" ? styles.ongletActif : styles.ongletInactif}
-            onClick={() => setOnglet("disponibilites")}
-          >
-            Disponibilités
-          </button>
-        </div>
+        {!(onglet === "sessions" && detailId) && (
+          <>
+            <div className={styles.entete}>
+              <div className={styles.enteteSup}>Semaine du 23 au 27 juin 2026</div>
+              <h1 className={styles.enteteTitre}>Calendrier des formations</h1>
+              <div className={styles.enteteSous}>Vue coordinatrice de terrain</div>
+            </div>
+            <div className={styles.onglets}>
+              <button
+                type="button"
+                className={onglet === "sessions" ? styles.ongletActif : styles.ongletInactif}
+                onClick={() => setOnglet("sessions")}
+              >
+                Sessions
+              </button>
+              <button
+                type="button"
+                className={onglet === "disponibilites" ? styles.ongletActif : styles.ongletInactif}
+                onClick={() => setOnglet("disponibilites")}
+              >
+                Disponibilités
+              </button>
+            </div>
+          </>
+        )}
         {onglet === "sessions" && detailId
           ? (() => {
               const creneau = creneaux.find((c) => c.id === detailId);

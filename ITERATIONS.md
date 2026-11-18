@@ -300,3 +300,25 @@ Le développeur a demandé, en plus de l'itération 3 : (a) associer une réserv
     - `frontend/src/app/page.tsx` — ajoute `.titreSection` (« Sessions prévues ») juste avant `.sessionBloc`.
     - `frontend/src/app/page.module.css` — `.onglets`/`.ongletActif`/`.ongletInactif` réécrits en bandeau à fond gris + onglet actif blanc/ombre (style `.view-tabs` de la maquette) ; `.titreSection` ajouté.
   - Version 10 signalée à PM Lab le 2026-11-18T16:41:41Z.
+
+## Itération 11 : l'écran détail masque les tabs et adapte l'en-tête
+
+- **Dans le périmètre** : quand l'écran détail d'une session est affiché, l'en-tête générique (« Calendrier des formations » + sous-titre) et le bandeau d'onglets disparaissent ; seuls le bandeau d'identité et l'en-tête propre à l'écran détail (bouton « ← Retour », titre de la session, horaire) restent visibles, comme l'écran 4 de la maquette.
+- **Hors périmètre** : l'onglet Disponibilités (non concerné) ; toute nouvelle donnée.
+- **Critères d'acceptation** :
+  - Étant donné l'écran détail affiché, le bandeau d'onglets Sessions/Disponibilités n'apparaît plus.
+  - Étant donné l'écran détail affiché, l'en-tête montre le bouton « ← Retour » et le titre de la session (pas l'en-tête générique).
+- **Hypothèse de l'équipe couverte** : aucune — retour de style.
+- **Codage estimé** : 1 à 2 minutes.
+- **Fichiers prévus** : `frontend/src/app/page.tsx`.
+- **Tests unitaires prévus** : aucun — style/affichage conditionnel pur.
+- **Étapes ajoutées à la démo** : aucune.
+- **Bilan** :
+  - Temps restant annoncé : 5 min (2026-11-18T16:44:xx) — même déficit assumé.
+  - Codage réel : <1 min, sans dépassement.
+  - Critères satisfaits : les deux.
+  - Écart : aucun.
+  - Harnais : aucun blocage ; `npm test` 11/11 inchangé ; déployabilité « aucune borne franchie ».
+  - **Modifications** :
+    - `frontend/src/app/page.tsx` — l'en-tête générique et le bandeau d'onglets ne s'affichent plus quand `onglet === "sessions" && detailId` ; l'écran détail (bouton retour + titre + horaire déjà existants) fait désormais office d'en-tête.
+  - Version 11 signalée à PM Lab le 2026-11-18T16:45:46Z.
