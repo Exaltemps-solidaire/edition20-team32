@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import { calculerStatutEquipe, libelleStatutEquipe } from "./equipe";
+import { libelleDemiJournee } from "./horaire";
 
 type Creneau = {
   id: string;
@@ -175,6 +176,14 @@ export default function Home() {
                     <span>Équipe</span>
                     <strong className={styles[`badge_${statut}`]}>{libelle}</strong>
                   </div>
+                  <div className={styles.titreSection}>Choisir un créneau</div>
+                  <button
+                    type="button"
+                    onClick={() => (creneau.bloque ? annuler(creneau.id) : bloquer(creneau.id))}
+                    className={creneau.bloque ? styles.creneauBloque : styles.creneauDispo}
+                  >
+                    {creneau.bloque ? "Annuler la réservation" : "Réserver ce créneau"}
+                  </button>
                   <div className={styles.formateursListe}>
                     {formateursDisponibles.map((nom) => (
                       <label key={nom} className={styles.formateurLigne}>
@@ -202,7 +211,6 @@ export default function Home() {
                 <div className={styles.sessionBloc}>
                   {creneaux.map((creneau) => {
                     const [, jourNum, mois] = creneau.jour.split(" ");
-                    const detail = detailsMock[creneau.id];
                     const assignes = assignations[creneau.id] ?? [];
                     const statut = calculerStatutEquipe(assignes.length, FORMATEURS_REQUIS);
                     const libelle = libelleStatutEquipe(statut, assignes.length, FORMATEURS_REQUIS);
@@ -214,28 +222,16 @@ export default function Home() {
                         </div>
                         <div className={styles.sessionCorps}>
                           <div className={styles.sessionTitre}>todo</div>
-                          <div className={styles.sessionMeta}>{creneau.horaire}</div>
-                          <div className={styles.sessionEtiquettes}>
-                            <span className={styles.etiquette}>todo</span>
-                            <span className={styles.etiquette}>{detail ? detail.tarif : "todo"}</span>
+                          <div className={styles.sessionMeta}>
+                            {creneau.horaire} · {libelleDemiJournee(creneau.horaire)} · todo
                           </div>
-                          <div className={styles.sessionActions}>
-                            <button
-                              type="button"
-                              onClick={() => (creneau.bloque ? annuler(creneau.id) : bloquer(creneau.id))}
-                              className={creneau.bloque ? styles.creneauBloque : styles.creneauDispo}
-                            >
-                              {creneau.horaire}
-                              {creneau.bloque ? " · Bloqué (annuler)" : ""}
-                            </button>
-                            <button
-                              type="button"
-                              className={styles.lienDetail}
-                              onClick={() => setDetailId(creneau.id)}
-                            >
-                              Voir le détail
-                            </button>
-                          </div>
+                          <button
+                            type="button"
+                            className={styles.lienDetail}
+                            onClick={() => setDetailId(creneau.id)}
+                          >
+                            Voir le détail
+                          </button>
                         </div>
                         <div className={styles.sessionStatut}>
                           <span className={styles[`badge_${statut}`]}>{libelle}</span>

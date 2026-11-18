@@ -351,3 +351,28 @@ Le développeur a demandé, en plus de l'itération 3 : (a) associer une réserv
     - `frontend/src/app/page.module.css` — `.formulaireAjout` (inputs + bouton, désactivé si un champ est vide).
   - Déployé : images `api` et `frontend` reconstruites et poussées (première fois que l'API change dans ce segment), conteneurs recréés, `POST /api/v1/creneaux` vérifié de bout en bout depuis la machine (créneau créé et listé).
   - Version 12 signalée à PM Lab le 2026-11-18T16:52:03Z.
+
+## Itération 13 : « Choisir un créneau » déplacé dans le détail, liste en lecture seule
+
+- **Dans le périmètre** : la liste « Sessions prévues » n'a plus de bouton d'action — elle affiche en gris l'heure, la demi-journée (dérivée de l'horaire) et le lieu (`"todo"`, aucune donnée de lieu n'existe) ; réserver/annuler un créneau se fait uniquement depuis l'écran détail, dans une section « Choisir un créneau ».
+- **Hors périmètre** : champ lieu réel (reste `"todo"`) ; navigation par clic sur toute la ligne (garde le lien « Voir le détail ») ; mise à jour de la démo Playwright.
+- **Critères d'acceptation** :
+  - Étant donné la liste des sessions, chaque ligne affiche en gris l'heure, la demi-journée et le lieu, sans bouton réserver/annuler.
+  - Étant donné l'écran détail d'un créneau disponible, une section « Choisir un créneau » propose « Réserver ce créneau » ; une fois réservé, elle propose « Annuler la réservation ».
+- **Hypothèse de l'équipe couverte** : aucune — retour d'ergonomie du développeur.
+- **Codage estimé** : 3 à 4 minutes.
+- **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/horaire.ts` (nouveau), `frontend/src/app/horaire.test.ts` (nouveau).
+- **Tests unitaires prévus** : 3, sur `libelleDemiJournee` (matin, après-midi, journée complète).
+- **Étapes ajoutées à la démo** : aucune (reporté, budget insuffisant).
+- **Bilan** :
+  - Temps restant annoncé : 10 min au total (2026-11-18T16:54:xx) — ✂️ signalé avant de coder : 10 minutes ne couvrent ni la publication (~5 min) ni un tour de test de l'équipe (~10 min). Le développeur a choisi de coder quand même, en sachant que le tour de test de l'équipe risque de ne pas avoir lieu avant la fin du build.
+  - Codage réel : <1 min, sans dépassement.
+  - Critères satisfaits : les deux.
+  - Écart : CSS devenu inutile (`.sessionActions`, `.sessionEtiquettes`, `.etiquette`) non supprimé de `page.module.css`, pour tenir le budget — à nettoyer dans une itération ultérieure si le temps le permet ; démo non mise à jour.
+  - Harnais : aucun blocage ; `npm test` 17/17 (10 api + 7 frontend) ; déployabilité « aucune borne franchie ».
+  - **Modifications** :
+    - `frontend/src/app/horaire.ts` — fonction pure `libelleDemiJournee` (dérive Matin/Après-midi/Journée depuis l'horaire texte).
+    - `frontend/src/app/horaire.test.ts` — 3 tests.
+    - `frontend/src/app/page.tsx` — liste : retire les boutons bloquer/annuler et les étiquettes, affiche heure/demi-journée/lieu en gris ; détail : ajoute la section « Choisir un créneau » avec le bouton réserver/annuler (déplacé depuis la liste).
+  - Déployé : image `frontend` seule reconstruite et poussée (pas de changement API), conteneur recréé, présence du nouveau texte vérifiée dans les fichiers statiques du conteneur.
+  - Version 13 signalée à PM Lab le 2026-11-18T16:58:11Z.
